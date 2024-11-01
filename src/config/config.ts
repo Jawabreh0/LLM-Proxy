@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 export const config = {
   openaiApiKey: process.env.OPENAI_API_KEY || "",
   bedrockRegion: process.env.AWS_REGION || "eu-west-2",

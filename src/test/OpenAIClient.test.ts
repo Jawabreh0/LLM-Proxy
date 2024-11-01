@@ -19,11 +19,7 @@ describe("OpenAIClient", () => {
       { role: "user", content: "Thank  you, how old are you ?" },
     ];
 
-    const response = await client.generateText(messages, {
-      model: "gpt-4",
-      maxTokens: 10,
-      temperature: 0.7,
-    });
+    const response = await client.generateText(messages, "gpt-4", 10, 0.7);
 
     expect(typeof response).toBe("string");
     expect(response.length).toBeGreaterThan(0); // Check if the response is not empty
