@@ -1,10 +1,12 @@
-import { MessageRoles } from "../types";
+// ClientInterface.ts
+import { OpenAIMessages } from "../types";
+import { OpenAISupportedLLMs } from "../types/SupportedModels";
 
 export interface ClientInterface {
   generateText(
-    messages: { role: MessageRoles; content: string }[],
-    model?: string,
+    messages: OpenAIMessages, // TODO: when we add more providers we need to update this
+    model?: OpenAISupportedLLMs, // TODO: when we add more providers we need to update this
     maxTokens?: number,
-    temperature?: number // TODO:  maybe we can use a type for this
+    temperature?: number
   ): Promise<string>;
 }

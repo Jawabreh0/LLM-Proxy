@@ -1,7 +1,9 @@
-import OpenAI from "openai";
+// OpenAIClient.ts
+
 import { ClientInterface } from "./ClientInterface";
-import { ChatCompletionMessageParam } from "openai/resources";
-import { Messages } from "../types";
+import { OpenAIMessages } from "../types";
+import { OpenAISupportedLLMs } from "../types/SupportedModels";
+import OpenAI from "openai";
 
 export class OpenAIClient implements ClientInterface {
   private openai: OpenAI;
@@ -11,18 +13,23 @@ export class OpenAIClient implements ClientInterface {
   }
 
   async generateText(
-    messages: any[], // TODO: solve this. This is not the correct type
-    model?: string,
-    maxTokens?: number,
-    temperature?: number
+    messages: OpenAIMessages,
+    model: OpenAISupportedLLMs,
+    maxTokens: number,
+    temperature: number
   ): Promise<string> {
-    const response = await this.openai.chat.completions.create({
-      model: model || "gpt-4", // TODO: check again if this is the default model we want to use
-      messages,
-      max_tokens: maxTokens || 100, // TODO: check again if this is the default maxTokens we want to use
-      temperature: temperature || 0.7, // TODO: check again if this is the default temperature we want to use
-    });
+    try {
+      const response = await this.openai.chat.completions.create({
+        model,
+        messages, // Now matches the expected type `ChatCompletionMessageParam[]`
+        max_tokens: maxTokens,
+        temperature,
+      });
 
-    return response.choices[0].message?.content || ""; // TODO: let's handle this better
+      return response.choices[0].message?.content || "";
+    } catch (error) {
+      console.error("Error generating text:", error);
+      return "";
+    }
   }
 }

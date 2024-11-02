@@ -1,4 +1,4 @@
-import { OpenAIClient } from "../../src/clients/OpenAIClient";
+import { OpenAIClient } from "../clients/OpenAIClient";
 import { config } from "../../src/config/config";
 
 describe("OpenAIClient", () => {
