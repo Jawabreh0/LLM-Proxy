@@ -1,6 +1,5 @@
 // ClientInterface.ts
-import { OpenAIMessages } from "../types";
-import { OpenAISupportedLLMs } from "../types/SupportedModels";
+import { OpenAIMessages, OpenAISupportedLLMs } from "../types";
 
 export interface ClientInterface {
   generateText(

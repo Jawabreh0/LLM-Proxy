@@ -1,7 +1,10 @@
 import { OpenAIClient } from "../clients/OpenAIClient";
 import { config } from "../../src/config/config";
-import { OpenAIMessages, OpenAIMessagesRoles } from "../types";
-import { OpenAISupportedLLMs } from "../types/SupportedModels";
+import {
+  OpenAIMessages,
+  OpenAIMessagesRoles,
+  OpenAISupportedLLMs,
+} from "../types";
 
 describe("OpenAIClient", () => {
   let client: OpenAIClient;
