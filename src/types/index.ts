@@ -1,21 +1,46 @@
-export enum OpenAIMessagesRole {
+export enum OpenAIMessagRoleS {
   SYSTEM = "system",
   USER = "user",
   ASSISTANT = "assistant",
   FUNCTION = "function",
 }
 
-export enum AnthropicMessagesRole { // TODO: Most probably this is wrong, check it back
+export enum AnthropicMessageRoles {
   SYSTEM = "system",
   USER = "user",
   ASSISTANT = "assistant",
 }
 
-export type MessageRoles = OpenAIMessagesRole | AnthropicMessagesRole;
-
-type Message = {
-  role: MessageRoles;
+type OpenAISystemMessage = {
+  role: "system";
   content: string;
 };
 
-export type Messages = Message[];
+type OpenAIUserMessage = {
+  role: "user";
+  content: string;
+};
+
+type OpenAIAssistantMessage = {
+  role: "assistant";
+  content: string;
+};
+
+type OpenAIToolMessage = {
+  role: "tool";
+  content: string;
+};
+
+type OpenAIFunctionMessage = {
+  role: "function";
+  content: string;
+  name: string;
+};
+export type OpenAIMessage =
+  | OpenAISystemMessage
+  | OpenAIUserMessage
+  | OpenAIAssistantMessage
+  | OpenAIToolMessage
+  | OpenAIFunctionMessage;
+
+export type OpenAIMessages = OpenAIMessage[];
