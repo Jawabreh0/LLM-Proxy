@@ -1,5 +1,3 @@
-// OpenAIClient.ts
-
 import { ClientInterface } from "./ClientInterface";
 import { OpenAIMessages } from "../types";
 import { OpenAISupportedLLMs } from "../types/SupportedModels";
@@ -21,7 +19,7 @@ export class OpenAIClient implements ClientInterface {
     try {
       const response = await this.openai.chat.completions.create({
         model,
-        messages, // Now matches the expected type `ChatCompletionMessageParam[]`
+        messages,
         max_tokens: maxTokens,
         temperature,
       });

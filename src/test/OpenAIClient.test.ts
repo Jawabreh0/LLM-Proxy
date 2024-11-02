@@ -1,5 +1,7 @@
 import { OpenAIClient } from "../clients/OpenAIClient";
 import { config } from "../../src/config/config";
+import { OpenAIMessages, OpenAIMessagesRoles } from "../types";
+import { OpenAISupportedLLMs } from "../types/SupportedModels";
 
 describe("OpenAIClient", () => {
   let client: OpenAIClient;
@@ -9,17 +11,31 @@ describe("OpenAIClient", () => {
   });
 
   it("should generate text based on input messages", async () => {
-    const messages = [
-      { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: "Hello, i'm Ahmad, who are you  ?" },
+    const messages: OpenAIMessages = [
       {
-        role: "assistant",
-        content: "I'm Lily your AI Assistant,  nice  to meet you Ahmad",
+        role: OpenAIMessagesRoles.SYSTEM,
+        content: "You are a helpful assistant.",
       },
-      { role: "user", content: "Thank  you, how old are you ?" },
+      {
+        role: OpenAIMessagesRoles.USER,
+        content: "Hello, I'm Ahmad, who are you?",
+      },
+      {
+        role: OpenAIMessagesRoles.ASSISTANT,
+        content: "I'm Lily, your AI Assistant. Nice to meet you, Ahmad.",
+      },
+      {
+        role: OpenAIMessagesRoles.USER,
+        content: "Thank you, how old are you?",
+      },
     ];
 
-    const response = await client.generateText(messages, "gpt-4", 10, 0.7);
+    const response = await client.generateText(
+      messages,
+      OpenAISupportedLLMs.GPT_4_O,
+      10,
+      0.7
+    );
 
     expect(typeof response).toBe("string");
     expect(response.length).toBeGreaterThan(0); // Check if the response is not empty
