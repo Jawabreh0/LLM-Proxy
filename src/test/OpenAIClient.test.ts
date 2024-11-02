@@ -33,7 +33,7 @@ describe("OpenAIClient", () => {
       },
     ];
 
-    const response = await client.generateText(
+    const response = await client.generateCompletion(
       messages,
       OpenAISupportedLLMs.GPT_4_O,
       10,

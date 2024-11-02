@@ -9,7 +9,7 @@ export class OpenAIClient implements ClientInterface {
     this.openai = new OpenAI({ apiKey });
   }
 
-  async generateText(
+  async generateCompletion(
     messages: OpenAIMessages,
     model: OpenAISupportedLLMs,
     maxTokens: number,

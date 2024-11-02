@@ -25,7 +25,7 @@ export class OpenAIChatExample {
   ): Promise<string> {
     this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
 
-    const response = await this.client.generateText(
+    const response = await this.client.generateCompletion(
       this.messages,
       model,
       maxTokens,

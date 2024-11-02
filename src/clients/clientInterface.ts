@@ -2,7 +2,7 @@
 import { OpenAIMessages, OpenAISupportedLLMs } from "../types";
 
 export interface ClientInterface {
-  generateText(
+  generateCompletion(
     messages: OpenAIMessages, // TODO: when we add more providers we need to update this
     model?: OpenAISupportedLLMs, // TODO: when we add more providers we need to update this
     maxTokens?: number,
