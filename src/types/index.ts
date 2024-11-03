@@ -129,3 +129,68 @@ export type BedrockAnthropicMessages = BedrockAnthropicMessage[];
 
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
 export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;
+
+// ANTHROPIC BEDROCK TYPES FROM CMND BLINX
+export interface ClaudeOptions {
+  outputTokenLength: number;
+  temperature: number;
+  systemPrompt: string;
+  messages: BedrockAnthropicMessages;
+  tools: any;
+}
+
+export interface Usage {
+  completion_tokens: number;
+  prompt_tokens: number;
+  total_tokens: number;
+}
+
+export interface BedrockAnthropicResponse {
+  id: string;
+  type: "message";
+  role: BedrockAnthropicMessageRole;
+  model: string;
+  content: BedrockAnthropicContent[];
+  stop_reason: string;
+  stop_sequence: string;
+  usage: Usage;
+}
+
+export interface BedrockAnthropicUsage {
+  input_tokens: number;
+  output_tokens: number;
+}
+
+export interface BedrockAnthropicMessageChunk {
+  id: string;
+  type: "message";
+  model: string;
+  role: BedrockAnthropicMessageRole;
+  content: BedrockAnthropicContent[];
+  stop_reason: string | null;
+  stop_sequence: string | null;
+  usage: BedrockAnthropicUsage;
+}
+
+export interface BedrockAnthropicContentBlock {
+  type: string;
+  text: string;
+  name?: string;
+  id?: string;
+  partial_json?: string;
+}
+
+export interface BedrockAnthropicMetrics {
+  inputTokenCount: number;
+  outputTokenCount: number;
+  invocationLatency: number;
+  firstByteLatency: number;
+}
+
+export type BedrockAnthropicParsedChunk = {
+  type: "message_start";
+  message?: BedrockAnthropicMessageChunk;
+  content_block?: BedrockAnthropicContentBlock;
+  delta?: BedrockAnthropicContentBlock;
+  "amazon-bedrock-invocationMetrics"?: BedrockAnthropicMetrics;
+};
