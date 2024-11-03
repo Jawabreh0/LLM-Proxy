@@ -1,4 +1,3 @@
-// ClientInterface.ts
 import { OpenAIMessages, OpenAISupportedLLMs } from "../types";
 
 export interface ClientInterface {

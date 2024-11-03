@@ -1,6 +1,6 @@
-import { ClientInterface } from "./ClientInterface";
 import { OpenAIMessages, OpenAISupportedLLMs } from "../types";
 import OpenAI from "openai";
+import { ClientInterface } from "./ClientInterface";
 
 export class OpenAIClient implements ClientInterface {
   private openai: OpenAI;
