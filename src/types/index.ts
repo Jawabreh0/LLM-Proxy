@@ -1,3 +1,12 @@
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+// GENERAL
+export enum Providers {
+  OPENAI = "OpenAI",
+  ANTHROPIC_BEDROCK = "AnthropicBedrock",
+  COHERE_BEDROCK = "CohereBedrock", // NOTE: not supported  yet
+}
+
+// OPENAI
 export enum OpenAIMessagesRoles {
   SYSTEM = "system",
   USER = "user",
@@ -42,10 +51,6 @@ export type OpenAIMessage =
 
 export type OpenAIMessages = OpenAIMessage[];
 
-export enum Providers {
-  OPENAI = "OpenAI",
-}
-
 export enum OpenAISupportedLLMs {
   GPT_4_O_LAEST = "chatgpt-4o-latest", // points to the latest version of gpt-4o
   GPT_4_O = "gpt-4o",
@@ -54,3 +59,73 @@ export enum OpenAISupportedLLMs {
   GPT_4_TURBO_PREVIEW = "gpt-4-turbo-preview", // its same  as gpt-4-turbo-2024-04-09
   GPT_3_5_TURBO = "gpt-3.5-turbo", // its same as gpt-3.5-turbo-0125
 }
+
+// AWS BEDROCK
+
+// AWS BEDROCK ANTHROPIC
+
+export enum BedrockAnthropicSupportedLLMs {
+  CLAUDE_3_HAIKU = "anthropic.claude-3-haiku-20240307-v1:0",
+  CLAUDE_3_SONNET = "anthropic.claude-3-sonnet-20240229-v1:0",
+  CLAUDE_3_OPUS = "anthropic.claude-3-opus-20240229-v1:0",
+  CLAUDE_3_5_SONNET = "anthropic.claude-3-5-sonnet-20241022-v2:0",
+}
+
+export enum BedrockAnthropicContentType {
+  TEXT = "text",
+  IMAGE = "image",
+  TOOL_USE = "tool_use",
+  TOOL_RESULT = "tool_result",
+}
+
+export enum BedrockAnthropicMessageRole {
+  USER = "user",
+  ASSISTANT = "assistant",
+}
+
+export interface BedrockAnthropicToolUseContent {
+  type: BedrockAnthropicContentType.TOOL_USE;
+  id: string;
+  name: string;
+  input: any;
+}
+
+interface BedrockAnthropicTextContent {
+  type: BedrockAnthropicContentType.TEXT;
+  text: string;
+}
+
+interface BedrockAnthropicImageContent {
+  type: BedrockAnthropicContentType.IMAGE;
+  source: {
+    type: string;
+    media_type: string;
+    data: string;
+  };
+}
+interface BedrockAnthropicToolResultContent {
+  type: BedrockAnthropicContentType.TOOL_RESULT;
+  content: string;
+}
+
+export type BedrockAnthropicContent =
+  | BedrockAnthropicToolUseContent
+  | BedrockAnthropicToolResultContent
+  | BedrockAnthropicTextContent
+  | BedrockAnthropicImageContent;
+
+export interface BedrockAnthropicMessage {
+  role: BedrockAnthropicMessageRole;
+  content: BedrockAnthropicContent[];
+}
+
+export interface BedrockAnthropicFunctionCall {
+  id: string;
+  name: string;
+  arguments: string;
+}
+
+export type BedrockAnthropicMessages = BedrockAnthropicMessage[];
+
+export type Messages = OpenAIMessages | BedrockAnthropicMessages;
+export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;

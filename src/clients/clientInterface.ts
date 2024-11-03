@@ -1,9 +1,9 @@
-import { OpenAIMessages, OpenAISupportedLLMs } from "../types";
+import { Messages, SupportedLLMs } from "../types";
 
 export interface ClientInterface {
   generateCompletion(
-    messages: OpenAIMessages, // TODO: when we add more providers we need to update this
-    model?: OpenAISupportedLLMs, // TODO: when we add more providers we need to update this
+    messages: Messages,
+    model?: SupportedLLMs,
     maxTokens?: number,
     temperature?: number,
     stream?: boolean

@@ -1,4 +1,4 @@
-import { OpenAIMessages, OpenAISupportedLLMs } from "../types";
+import { Messages, SupportedLLMs } from "../types";
 import OpenAI from "openai";
 import { ClientInterface } from "./ClientInterface";
 
@@ -10,8 +10,8 @@ export class OpenAIClient implements ClientInterface {
   }
 
   async generateCompletion(
-    messages: OpenAIMessages,
-    model: OpenAISupportedLLMs,
+    messages: Messages,
+    model: SupportedLLMs,
     maxTokens: number,
     temperature: number
   ): Promise<string> {
