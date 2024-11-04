@@ -1,3 +1,4 @@
+import { Stream } from "stream";
 import { LLMResponse, Messages, SupportedLLMs } from "../types";
 
 export interface ClientInterface {
