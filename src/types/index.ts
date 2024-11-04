@@ -1,4 +1,3 @@
-import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 // GENERAL
 export enum Providers {
   OPENAI = "OpenAI",
@@ -58,6 +57,45 @@ export enum OpenAISupportedLLMs {
   GPT_4_TURBO = "gpt-4-turbo",
   GPT_4_TURBO_PREVIEW = "gpt-4-turbo-preview", // its same  as gpt-4-turbo-2024-04-09
   GPT_3_5_TURBO = "gpt-3.5-turbo", // its same as gpt-3.5-turbo-0125
+}
+
+export interface OpenAIChoices {
+  index: number;
+  message: any; // TODO: update this guys types as well
+  logprobs: any; // TODO: define logprobs type
+  finish_reason: string;
+}
+
+export interface OpenAIUsage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  prompt_tokens_details: any; // TODO: define type
+  completion_tokens_details: any; // TODO: define type
+}
+
+export interface OpenAIResponse {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  choices: Array<{
+    index: number;
+    message: {
+      role: string;
+      content: string;
+    };
+    logprobs: null | object;
+    finish_reason: string;
+  }>;
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    prompt_tokens_details: { cached_tokens: number };
+    completion_tokens_details: { reasoning_tokens: number };
+  };
+  system_fingerprint: string;
 }
 
 // AWS BEDROCK
@@ -127,11 +165,8 @@ export interface BedrockAnthropicFunctionCall {
 
 export type BedrockAnthropicMessages = BedrockAnthropicMessage[];
 
-export type Messages = OpenAIMessages | BedrockAnthropicMessages;
-export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;
-
 // ANTHROPIC BEDROCK TYPES FROM CMND BLINX
-export interface ClaudeOptions {
+export interface BedrockAnthropicOptions {
   outputTokenLength: number;
   temperature: number;
   systemPrompt: string;
@@ -145,6 +180,11 @@ export interface Usage {
   total_tokens: number;
 }
 
+export interface BedrockAnthropicUsage {
+  input_tokens: number;
+  output_tokens: number;
+}
+
 export interface BedrockAnthropicResponse {
   id: string;
   type: "message";
@@ -153,12 +193,7 @@ export interface BedrockAnthropicResponse {
   content: BedrockAnthropicContent[];
   stop_reason: string;
   stop_sequence: string;
-  usage: Usage;
-}
-
-export interface BedrockAnthropicUsage {
-  input_tokens: number;
-  output_tokens: number;
+  usage: BedrockAnthropicUsage;
 }
 
 export interface BedrockAnthropicMessageChunk {
@@ -194,3 +229,9 @@ export type BedrockAnthropicParsedChunk = {
   delta?: BedrockAnthropicContentBlock;
   "amazon-bedrock-invocationMetrics"?: BedrockAnthropicMetrics;
 };
+
+// GENERAL
+
+export type Messages = OpenAIMessages | BedrockAnthropicMessages;
+export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;
+export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;

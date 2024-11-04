@@ -1,4 +1,4 @@
-import { Messages, SupportedLLMs } from "../types";
+import { LLMResponse, Messages, SupportedLLMs } from "../types";
 
 export interface ClientInterface {
   generateCompletion(
@@ -6,6 +6,7 @@ export interface ClientInterface {
     model?: SupportedLLMs,
     maxTokens?: number,
     temperature?: number,
-    stream?: boolean
-  ): Promise<string>;
+    systemPrompt?: string,
+    tools?: any
+  ): Promise<LLMResponse>;
 }
