@@ -49,4 +49,26 @@ export class OpenAIClient implements ClientInterface {
       };
     }
   }
+
+  async *generateStreamCompletion(
+    messages: Messages,
+    model?: SupportedLLMs,
+    maxTokens?: number,
+    temperature?: number,
+    tools?: any,
+    stream?: boolean
+    // TODO: we need to have openai parsed chunk interfacr/type
+  ): AsyncGenerator<any, void, unknown> {
+    const completion = await this.openai.chat.completions.create({
+      model,
+      messages,
+      ...tools,
+      max_tokens: maxTokens,
+      temperature,
+      stream: true,
+      stream_options: {
+        include_usage: true,
+      },
+    });
+  }
 }
