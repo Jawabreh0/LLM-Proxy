@@ -54,8 +54,6 @@ describe("AwsBedrockAnthropicClient", () => {
       systemPrompt
     );
 
-    console.log("AWS Bedrock Anthropic Response", response);
-
     // Validate response structure
     expect(response).toBeDefined();
     expect(response).toHaveProperty("id");

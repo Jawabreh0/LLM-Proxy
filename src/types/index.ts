@@ -174,12 +174,6 @@ export interface BedrockAnthropicOptions {
   tools: any;
 }
 
-export interface Usage {
-  completion_tokens: number;
-  prompt_tokens: number;
-  total_tokens: number;
-}
-
 export interface BedrockAnthropicUsage {
   input_tokens: number;
   output_tokens: number;
@@ -231,7 +225,6 @@ export type BedrockAnthropicParsedChunk = {
 };
 
 // GENERAL
-
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
 export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;
 export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
