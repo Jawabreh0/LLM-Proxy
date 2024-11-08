@@ -1,3 +1,5 @@
+// TODO: this test is fucked up and needs to be fixed
+
 import { AwsBedrockAnthropicService } from "../services/AwsBedrockAnthropicService";
 import {
   BedrockAnthropicContentType,

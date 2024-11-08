@@ -31,7 +31,7 @@ describe("OpenAIClient", () => {
 
     const response = await client.generateCompletion(
       messages,
-      OpenAISupportedLLMs.GPT_4_O,
+      OpenAISupportedLLMs.GPT_4_O_MINI,
       10,
       0.7
     );
