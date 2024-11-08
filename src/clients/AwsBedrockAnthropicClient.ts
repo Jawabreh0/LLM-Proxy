@@ -1,101 +1,55 @@
-import { config } from "../config/config";
-import {
-  BedrockAnthropicParsedChunk,
-  BedrockAnthropicResponse,
-  Messages,
-  SupportedLLMs,
-} from "../types";
-import {
-  InvokeModelCommand,
-  BedrockRuntimeClient,
-  InvokeModelWithResponseStreamCommand,
-} from "@aws-sdk/client-bedrock-runtime";
-import { ClientInterface } from "./ClientInterface";
+import { AwsBedrockAnthropicService } from "../services/AwsBedrockAnthropicService";
+import { BedrockAnthropicParsedChunk, Messages, SupportedLLMs } from "../types";
 
-export class AwsBedrockAnthropicClient implements ClientInterface {
-  private bedrock: BedrockRuntimeClient;
+export class AwsBedrockAnthropicChatClient {
+  private client: AwsBedrockAnthropicService;
 
   constructor() {
-    this.bedrock = new BedrockRuntimeClient({
-      region: config.awsRegion,
-      credentials: {
-        accessKeyId: config.awsAccessKey,
-        secretAccessKey: config.awsSecretKey,
-      },
-    });
+    this.client = new AwsBedrockAnthropicService();
   }
 
-  async generateCompletion(
+  async sendMessage(
     messages: Messages,
-    model?: SupportedLLMs,
+    model: SupportedLLMs,
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
     tools?: any
-  ): Promise<BedrockAnthropicResponse> {
-    const body = JSON.stringify({
-      anthropic_version: "bedrock-2023-05-31",
-      max_tokens: maxTokens,
-      temperature,
+  ) {
+    const response = await this.client.generateCompletion(
       messages,
-      system: systemPrompt,
-      ...(tools && tools.length > 0 ? { tools } : {}),
-    });
-
-    const command = new InvokeModelCommand({
-      modelId: model,
-      body,
-      contentType: "application/json",
-      accept: "application/json",
-    });
-
-    const response = await this.bedrock.send(command);
-    const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-
-    return responseBody;
+      model,
+      maxTokens,
+      temperature,
+      systemPrompt,
+      tools
+    );
+    console.log("Response:", response);
+    return response;
   }
 
-  async *generateStreamCompletion(
+  async *sendMessageStream(
     messages: Messages,
-    model?: SupportedLLMs,
+    model: SupportedLLMs,
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
-    tools?: any,
-    stream?: boolean
-  ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    const body = JSON.stringify({
-      anthropic_version: "bedrock-2023-05-31",
-      max_tokens: maxTokens,
-      temperature,
+    tools?: any
+  ): AsyncGenerator<string, void, unknown> {
+    const stream = this.client.generateStreamCompletion(
       messages,
-      system: systemPrompt,
-      ...(tools && tools.length > 0 ? { tools } : {}),
-    });
+      model,
+      maxTokens,
+      temperature,
+      systemPrompt,
+      tools,
+      true
+    );
 
-    const command = new InvokeModelWithResponseStreamCommand({
-      modelId: model,
-      body,
-      contentType: "application/json",
-      accept: "application/json",
-    });
-
-    const response = await this.bedrock.send(command);
-
-    if (response.body) {
-      const decoder = new TextDecoder("utf-8");
-
-      for await (const payload of response.body) {
-        const decodedString = decoder.decode(payload.chunk?.bytes, {
-          stream: true,
-        });
-
-        try {
-          const jsonObject = JSON.parse(decodedString);
-          yield jsonObject;
-        } catch (error) {
-          console.error("Failed to parse chunk as JSON:", error);
-        }
+    for await (const chunk of stream) {
+      const content = chunk.delta?.text;
+      if (content) {
+        yield content;
       }
     }
   }

@@ -1,55 +1,72 @@
-import OpenAI from "openai";
-import { OpenAIMessages, OpenAIResponse, OpenAISupportedLLMs } from "../types";
-import { ClientInterface } from "./ClientInterface";
+import { OpenAIService } from "../services/OpenAIService";
+import {
+  Messages,
+  OpenAIMessage,
+  OpenAIMessagesRoles,
+  OpenAIResponse,
+  OpenAISupportedLLMs,
+} from "../types";
 
-export class OpenAIClient implements ClientInterface {
-  private openai: OpenAI;
+export class OpenAIClient {
+  private client: OpenAIService;
+  private messages: OpenAIMessage[] = [];
 
-  constructor(apiKey: string) {
-    this.openai = new OpenAI({ apiKey });
+  constructor(apiKey: string, systemPrompt: string) {
+    this.client = new OpenAIService(apiKey);
+    this.messages.push({
+      role: OpenAIMessagesRoles.SYSTEM,
+      content: systemPrompt,
+    });
   }
 
-  async generateCompletion(
-    messages: OpenAIMessages,
+  async sendMessage(
+    userInput: string,
     model: OpenAISupportedLLMs,
     maxTokens: number,
     temperature: number
-  ): Promise<OpenAIResponse> {
-    try {
-      const response = await this.openai.chat.completions.create({
-        model,
-        messages,
-        max_tokens: maxTokens,
-        temperature,
-      });
-      return response as OpenAIResponse;
-    } catch (error) {
-      console.error("Error generating text:", error);
-      throw error;
-    }
+  ): Promise<string> {
+    this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
+
+    const response: OpenAIResponse = await this.client.generateCompletion(
+      this.messages,
+      model,
+      maxTokens,
+      temperature
+    );
+
+    const responseContent: string = response.choices[0].message.content;
+    this.messages.push({
+      role: OpenAIMessagesRoles.ASSISTANT,
+      content: responseContent,
+    });
+
+    return responseContent;
   }
 
-  async *generateStreamCompletion(
-    messages: OpenAIMessages,
+  async *sendMessageStream(
+    userInput: string,
     model: OpenAISupportedLLMs,
     maxTokens: number,
     temperature: number
-  ): AsyncGenerator<any, void, unknown> {
-    try {
-      const stream = await this.openai.chat.completions.create({
-        model,
-        messages,
-        max_tokens: maxTokens,
-        temperature,
-        stream: true,
-      });
+  ): AsyncGenerator<string, void, unknown> {
+    this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
 
-      for await (const chunk of stream) {
-        yield chunk;
+    const stream = this.client.generateStreamCompletion(
+      this.messages,
+      model,
+      maxTokens,
+      temperature
+    );
+
+    for await (const chunk of stream) {
+      if (
+        chunk.choices &&
+        chunk.choices[0].delta &&
+        chunk.choices[0].delta.content
+      ) {
+        const content = chunk.choices[0].delta.content;
+        yield content;
       }
-    } catch (error) {
-      console.error("Error in stream completion:", error);
-      throw error;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { AwsBedrockAnthropicClient } from "../clients/AwsBedrockAnthropicClient";
+import { AwsBedrockAnthropicClient } from "../services/AwsBedrockAnthropicService";
 import {
   BedrockAnthropicContentType,
   BedrockAnthropicMessageRole,

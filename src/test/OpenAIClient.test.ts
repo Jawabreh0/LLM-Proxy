@@ -1,4 +1,4 @@
-import { OpenAIClient } from "../clients/OpenaiClient";
+import { OpenAIClient } from "../services/OpenAIService";
 import { config } from "../../src/config/config";
 import { Messages, OpenAIMessagesRoles, OpenAISupportedLLMs } from "../types";
 

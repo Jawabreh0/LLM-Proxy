@@ -1,17 +1,8 @@
 // index.ts
 import readline from "readline";
-import { OpenAIChatExample } from "./examples/OpenAIChatExample";
 import { config } from "./config/config";
 import { OpenAISupportedLLMs, Providers } from "./types";
-
-import { AwsBedrockAnthropicChatExample } from "./examples/AwsBedrockAnthropicChatExample";
-import {
-  BedrockAnthropicContentType,
-  BedrockAnthropicMessageRole,
-  BedrockAnthropicMessages,
-  BedrockAnthropicSupportedLLMs,
-  Messages,
-} from "./types";
+import { OpenAIClient } from "./clients/OpenAIClient";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -56,7 +47,7 @@ const main = async () => {
 
   const systemPrompt = await prompt("\nEnter a system prompt: ");
 
-  const chatUtil = new OpenAIChatExample(config.openaiApiKey, systemPrompt);
+  const chatUtil = new OpenAIClient(config.openaiApiKey, systemPrompt);
 
   // Choose interaction type
   console.log("\nSelect interaction type:");

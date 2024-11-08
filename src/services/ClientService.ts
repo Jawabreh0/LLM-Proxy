@@ -5,7 +5,7 @@ import {
   SupportedLLMs,
 } from "../types";
 
-export interface ClientInterface {
+export interface ClientService {
   generateCompletion(
     messages: Messages,
     model?: SupportedLLMs,
