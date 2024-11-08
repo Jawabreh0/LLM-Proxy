@@ -1,6 +1,6 @@
 // index.ts
 import readline from "readline";
-import { OpenAIChatExample } from "./examples/OpenAChatExample";
+import { OpenAIChatExample } from "./examples/OpenAIChatExample";
 import { config } from "./config/config";
 import { OpenAISupportedLLMs, Providers } from "./types";
 
@@ -49,18 +49,41 @@ const main = async () => {
 
   const chatUtil = new OpenAIChatExample(config.openaiApiKey, systemPrompt);
 
+  // Choose interaction type
+  console.log("\nSelect interaction type:");
+  console.log("1. Non-streaming (full response)");
+  console.log("2. Streaming (real-time response)");
+  const interactionTypeChoice = parseInt(await prompt("Choose (1 or 2): "), 10);
+  const useStreaming = interactionTypeChoice === 2;
+
   console.log('\nYou can start chatting now. Type "exit" to quit.\n');
+
   while (true) {
     const userInput = await prompt("You: ");
     if (userInput.toLowerCase() === "exit") break;
 
-    const response = await chatUtil.sendMessage(
-      userInput,
-      model,
-      maxTokens,
-      temperature
-    );
-    console.log(`Assistant: ${response}`);
+    if (useStreaming) {
+      // Stream mode: respond with each token as it arrives
+      console.log("Assistant: ");
+      for await (const token of chatUtil.sendMessageStream(
+        userInput,
+        model,
+        maxTokens,
+        temperature
+      )) {
+        process.stdout.write(token); // Output each token incrementally
+      }
+      console.log(); // Newline after the response is complete
+    } else {
+      // Non-streaming mode: wait for full response
+      const response = await chatUtil.sendMessage(
+        userInput,
+        model,
+        maxTokens,
+        temperature
+      );
+      console.log(`Assistant: ${response}`);
+    }
   }
 
   rl.close();
