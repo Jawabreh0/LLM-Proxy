@@ -1,5 +1,6 @@
 import { OpenAIClient } from "../clients/OpenaiClient";
 import {
+  Messages,
   OpenAIMessage,
   OpenAIMessagesRoles,
   OpenAIResponse,

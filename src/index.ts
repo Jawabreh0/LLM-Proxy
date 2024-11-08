@@ -4,6 +4,15 @@ import { OpenAIChatExample } from "./examples/OpenAIChatExample";
 import { config } from "./config/config";
 import { OpenAISupportedLLMs, Providers } from "./types";
 
+import { AwsBedrockAnthropicChatExample } from "./examples/AwsBedrockAnthropicChatExample";
+import {
+  BedrockAnthropicContentType,
+  BedrockAnthropicMessageRole,
+  BedrockAnthropicMessages,
+  BedrockAnthropicSupportedLLMs,
+  Messages,
+} from "./types";
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -90,3 +99,73 @@ const main = async () => {
 };
 
 main();
+
+// async function exampleNonStreamingUsage() {
+//   const apiKey = "--";
+//   const systemPrompt = "You are an AI assistant.";
+//   const openAIChat = new OpenAIChatExample(apiKey, systemPrompt);
+
+//   const response = await openAIChat.sendMessage(
+//     "Tell me a joke.",
+//     OpenAISupportedLLMs.GPT_4_O_LAEST,
+//     100,
+//     0.7
+//   );
+
+//   console.log("Non-streaming response:", response);
+// }
+
+// async function exampleStreamingUsage() {
+//   const apiKey = "--";
+//   const systemPrompt = "You are an AI assistant.";
+//   const openAIChat = new OpenAIChatExample(apiKey, systemPrompt);
+
+//   console.log("Streaming response:");
+//   for await (const content of openAIChat.sendMessageStream(
+//     "Tell me a long story.",
+//     OpenAISupportedLLMs.GPT_4_O_LAEST,
+//     1000,
+//     0.7
+//   )) {
+//     process.stdout.write(content); // Print each token as it arrives
+//   }
+// }
+
+// // exampleStreamingUsage();
+// async function exampleStreamingUsage() {
+//   const systemPrompt = "You are an AI assistant.";
+//   const model = BedrockAnthropicSupportedLLMs.CLAUDE_3_SONNET; // Replace with the exact model you need
+//   const maxTokens = 1000;
+//   const temperature = 0.7;
+
+//   // Construct messages following the BedrockAnthropicMessages format
+//   const messages: Messages = [
+//     {
+//       role: BedrockAnthropicMessageRole.USER, // Use correct role based on BedrockAnthropicMessageRole
+//       content: [
+//         {
+//           type: BedrockAnthropicContentType.TEXT, // Use correct content type
+//           text: "Tell me a long story.",
+//         },
+//       ],
+//     },
+//   ];
+
+//   const bedrockChat = new AwsBedrockAnthropicChatExample();
+
+//   console.log("Streaming response:");
+//   for await (const content of bedrockChat.sendMessageStream(
+//     messages,
+//     model,
+//     maxTokens,
+//     temperature,
+//     systemPrompt
+//   )) {
+//     if (content !== undefined) {
+//       process.stdout.write(content); // Print each token as it arrives
+//     }
+//   }
+// }
+
+// // Call the function to test streaming output
+// exampleStreamingUsage();
