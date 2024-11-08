@@ -165,7 +165,6 @@ export interface BedrockAnthropicFunctionCall {
 
 export type BedrockAnthropicMessages = BedrockAnthropicMessage[];
 
-// ANTHROPIC BEDROCK TYPES FROM CMND BLINX
 export interface BedrockAnthropicOptions {
   outputTokenLength: number;
   temperature: number;

@@ -1,42 +1,45 @@
-// import { OpenAIClient } from "../clients/OpenaiClient";
-// import {
-//   OpenAIMessage,
-//   OpenAIMessagesRoles,
-//   OpenAISupportedLLMs,
-// } from "../types";
+import { OpenAIClient } from "../clients/OpenaiClient";
+import {
+  OpenAIMessage,
+  OpenAIMessagesRoles,
+  OpenAIResponse,
+  OpenAISupportedLLMs,
+} from "../types";
 
-// export class OpenAIChatExample {
-//   private client: OpenAIClient;
-//   private messages: OpenAIMessage[] = [];
+export class OpenAIChatExample {
+  private client: OpenAIClient;
+  private messages: OpenAIMessage[] = [];
 
-//   constructor(apiKey: string, systemPrompt: string) {
-//     this.client = new OpenAIClient(apiKey);
-//     this.messages.push({
-//       role: OpenAIMessagesRoles.SYSTEM,
-//       content: systemPrompt,
-//     });
-//   }
+  constructor(apiKey: string, systemPrompt: string) {
+    this.client = new OpenAIClient(apiKey);
+    this.messages.push({
+      role: OpenAIMessagesRoles.SYSTEM,
+      content: systemPrompt,
+    });
+  }
 
-//   async sendMessage(
-//     userInput: string,
-//     model: OpenAISupportedLLMs,
-//     maxTokens: number,
-//     temperature: number
-//   ): Promise<string> {
-//     this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
+  async sendMessage(
+    userInput: string,
+    model: OpenAISupportedLLMs,
+    maxTokens: number,
+    temperature: number
+  ): Promise<string> {
+    this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
 
-//     const response = await this.client.generateCompletion(
-//       this.messages,
-//       model,
-//       maxTokens,
-//       temperature
-//     );
+    const response: OpenAIResponse = await this.client.generateCompletion(
+      this.messages,
+      model,
+      maxTokens,
+      temperature
+    );
 
-//     this.messages.push({
-//       role: OpenAIMessagesRoles.ASSISTANT,
-//       content: response,
-//     });
+    const responseContent: string = response.choices[0].message.content;
 
-//     return response;
-//   }
-// }
+    this.messages.push({
+      role: OpenAIMessagesRoles.ASSISTANT,
+      content: responseContent,
+    });
+
+    return responseContent;
+  }
+}
