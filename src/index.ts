@@ -12,7 +12,7 @@ const rl = readline.createInterface({
 const providers = Object.values(Providers);
 const models = Object.values(OpenAISupportedLLMs);
 const temperatures = [0.3, 0.5, 0.7, 1.0];
-const maxTokens = 100;
+const maxTokens = 1000;
 
 const prompt = (query: string): Promise<string> => {
   return new Promise((resolve) => rl.question(query, resolve));

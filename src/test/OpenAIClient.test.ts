@@ -1,12 +1,12 @@
-import { OpenAIClient } from "../services/OpenAIService";
 import { config } from "../../src/config/config";
+import { OpenAIService } from "../services/OpenAIService";
 import { Messages, OpenAIMessagesRoles, OpenAISupportedLLMs } from "../types";
 
 describe("OpenAIClient", () => {
-  let client: OpenAIClient;
+  let client: OpenAIService;
 
   beforeAll(() => {
-    client = new OpenAIClient(config.openaiApiKey);
+    client = new OpenAIService(config.openaiApiKey);
   });
 
   it("should generate text based on input messages", async () => {

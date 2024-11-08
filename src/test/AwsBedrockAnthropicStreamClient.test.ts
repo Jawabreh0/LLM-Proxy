@@ -1,4 +1,4 @@
-import { AwsBedrockAnthropicClient } from "../services/AwsBedrockAnthropicService";
+import { AwsBedrockAnthropicService } from "../services/AwsBedrockAnthropicService";
 import {
   BedrockAnthropicContentType,
   BedrockAnthropicMessageRole,
@@ -7,11 +7,11 @@ import {
   BedrockAnthropicSupportedLLMs,
 } from "../types";
 
-describe("AwsBedrockAnthropicClient Streaming", () => {
-  let client: AwsBedrockAnthropicClient;
+describe("AwsBedrockAnthropicService Streaming", () => {
+  let client: AwsBedrockAnthropicService;
 
   beforeAll(() => {
-    client = new AwsBedrockAnthropicClient();
+    client = new AwsBedrockAnthropicService();
   });
 
   it("should stream a valid response based on input messages and system prompt", async () => {
