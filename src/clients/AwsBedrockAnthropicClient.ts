@@ -70,7 +70,7 @@ export class AwsBedrockAnthropicClient implements ClientInterface {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools.length ? { tools } : {}),
+      ...(tools && tools.length > 0 ? { tools } : {}),
     });
 
     const command = new InvokeModelWithResponseStreamCommand({
