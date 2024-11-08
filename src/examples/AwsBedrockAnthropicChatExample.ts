@@ -8,7 +8,6 @@ export class AwsBedrockAnthropicChatExample {
     this.client = new AwsBedrockAnthropicClient();
   }
 
-  // Non-streaming function to send a message and get a full response
   async sendMessage(
     messages: Messages,
     model: SupportedLLMs,
@@ -29,7 +28,6 @@ export class AwsBedrockAnthropicChatExample {
     return response;
   }
 
-  // Streaming function to send a message and get response tokens incrementally
   async *sendMessageStream(
     messages: Messages,
     model: SupportedLLMs,
@@ -38,7 +36,6 @@ export class AwsBedrockAnthropicChatExample {
     systemPrompt?: string,
     tools?: any
   ): AsyncGenerator<string, void, unknown> {
-    // Call streaming method from AwsBedrockAnthropicClient
     const stream = this.client.generateStreamCompletion(
       messages,
       model,
@@ -46,10 +43,9 @@ export class AwsBedrockAnthropicChatExample {
       temperature,
       systemPrompt,
       tools,
-      true // Set to true if it's required to enable streaming
+      true
     );
 
-    // Yield each token incrementally as it arrives
     for await (const chunk of stream) {
       const content = chunk.delta?.text;
       if (content) {
