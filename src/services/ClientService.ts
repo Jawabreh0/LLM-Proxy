@@ -5,6 +5,7 @@ import {
   SupportedLLMs,
 } from "../types";
 
+// for non streaming responses
 export interface ClientService {
   generateCompletion(
     messages: Messages,
