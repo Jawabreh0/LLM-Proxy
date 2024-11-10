@@ -33,6 +33,14 @@ export class AwsBedrockAnthropicService implements ClientService {
     systemPrompt?: string,
     tools?: any
   ): Promise<BedrockAnthropicResponse> {
+    // Extract model ID from SupportedLLMs if it's of type 'BedrockAnthropic'
+    const modelId =
+      model?.type === "BedrockAnthropic" ? model.model : undefined;
+
+    if (!modelId) {
+      throw new Error("Invalid model type for AwsBedrockAnthropicService");
+    }
+
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
       max_tokens: maxTokens,
@@ -43,7 +51,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const command = new InvokeModelCommand({
-      modelId: model,
+      modelId,
       body,
       contentType: "application/json",
       accept: "application/json",
@@ -64,6 +72,14 @@ export class AwsBedrockAnthropicService implements ClientService {
     tools?: any,
     stream?: boolean
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
+    // Extract model ID from SupportedLLMs if it's of type 'BedrockAnthropic'
+    const modelId =
+      model?.type === "BedrockAnthropic" ? model.model : undefined;
+
+    if (!modelId) {
+      throw new Error("Invalid model type for AwsBedrockAnthropicService");
+    }
+
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
       max_tokens: maxTokens,
@@ -74,7 +90,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const command = new InvokeModelWithResponseStreamCommand({
-      modelId: model,
+      modelId,
       body,
       contentType: "application/json",
       accept: "application/json",

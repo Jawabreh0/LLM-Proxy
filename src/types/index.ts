@@ -128,7 +128,7 @@ export interface BedrockAnthropicToolUseContent {
   input: any;
 }
 
-interface BedrockAnthropicTextContent {
+export interface BedrockAnthropicTextContent {
   type: BedrockAnthropicContentType.TEXT;
   text: string;
 }
@@ -141,7 +141,7 @@ interface BedrockAnthropicImageContent {
     data: string;
   };
 }
-interface BedrockAnthropicToolResultContent {
+export interface BedrockAnthropicToolResultContent {
   type: BedrockAnthropicContentType.TOOL_RESULT;
   content: string;
 }

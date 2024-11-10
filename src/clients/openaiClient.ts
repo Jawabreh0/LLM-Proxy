@@ -1,72 +1,66 @@
-import { OpenAIService } from "../services/OpenAIService";
-import {
-  Messages,
-  OpenAIMessage,
-  OpenAIMessagesRoles,
-  OpenAIResponse,
-  OpenAISupportedLLMs,
-} from "../types";
+// import { OpenAIService } from "../services/OpenAIService";
+// import { OpenAIMessage, OpenAIMessagesRoles, OpenAIResponse, OpenAISupportedLLMs } from "../types";
 
-export class OpenAIClient {
-  private client: OpenAIService;
-  private messages: OpenAIMessage[] = [];
+// export class OpenAIClient {
+//   private client: OpenAIService;
+//   private messages: OpenAIMessage[] = [];
 
-  constructor(apiKey: string, systemPrompt: string) {
-    this.client = new OpenAIService(apiKey);
-    this.messages.push({
-      role: OpenAIMessagesRoles.SYSTEM,
-      content: systemPrompt,
-    });
-  }
+//   constructor(apiKey: string, systemPrompt: string) {
+//     this.client = new OpenAIService(apiKey);
+//     this.messages.push({
+//       role: OpenAIMessagesRoles.SYSTEM,
+//       content: systemPrompt,
+//     });
+//   }
 
-  async sendMessage(
-    userInput: string,
-    model: OpenAISupportedLLMs,
-    maxTokens: number,
-    temperature: number
-  ): Promise<string> {
-    this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
+//   async sendMessage(
+//     userInput: string,
+//     model: OpenAISupportedLLMs,
+//     maxTokens: number,
+//     temperature: number
+//   ): Promise<string> {
+//     this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
 
-    const response: OpenAIResponse = await this.client.generateCompletion(
-      this.messages,
-      model,
-      maxTokens,
-      temperature
-    );
+//     const response: OpenAIResponse = await this.client.generateCompletion(
+//       this.messages,
+//       model,
+//       maxTokens,
+//       temperature
+//     );
 
-    const responseContent: string = response.choices[0].message.content;
-    this.messages.push({
-      role: OpenAIMessagesRoles.ASSISTANT,
-      content: responseContent,
-    });
+//     const responseContent: string = response.choices[0].message.content;
+//     this.messages.push({
+//       role: OpenAIMessagesRoles.ASSISTANT,
+//       content: responseContent,
+//     });
 
-    return responseContent;
-  }
+//     return responseContent;
+//   }
 
-  async *sendMessageStream(
-    userInput: string,
-    model: OpenAISupportedLLMs,
-    maxTokens: number,
-    temperature: number
-  ): AsyncGenerator<string, void, unknown> {
-    this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
+//   async *sendMessageStream(
+//     userInput: string,
+//     model: OpenAISupportedLLMs,
+//     maxTokens: number,
+//     temperature: number
+//   ): AsyncGenerator<string, void, unknown> {
+//     this.messages.push({ role: OpenAIMessagesRoles.USER, content: userInput });
 
-    const stream = this.client.generateStreamCompletion(
-      this.messages,
-      model,
-      maxTokens,
-      temperature
-    );
+//     const stream = this.client.generateStreamCompletion(
+//       this.messages,
+//       model,
+//       maxTokens,
+//       temperature
+//     );
 
-    for await (const chunk of stream) {
-      if (
-        chunk.choices &&
-        chunk.choices[0].delta &&
-        chunk.choices[0].delta.content
-      ) {
-        const content = chunk.choices[0].delta.content;
-        yield content;
-      }
-    }
-  }
-}
+//     for await (const chunk of stream) {
+//       if (
+//         chunk.choices &&
+//         chunk.choices[0].delta &&
+//         chunk.choices[0].delta.content
+//       ) {
+//         const content = chunk.choices[0].delta.content;
+//         yield content;
+//       }
+//     }
+//   }
+// }
