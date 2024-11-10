@@ -225,5 +225,10 @@ export type BedrockAnthropicParsedChunk = {
 
 // GENERAL
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
-export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;
 export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
+
+// export type SupportedLLMs = OpenAISupportedLLMs | BedrockAnthropicSupportedLLMs;
+
+export type SupportedLLMs =
+  | { type: "OpenAI"; model: OpenAISupportedLLMs }
+  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs };

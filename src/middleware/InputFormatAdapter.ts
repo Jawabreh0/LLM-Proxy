@@ -1,8 +1,12 @@
 import {
-  Providers,
-  Messages,
-  OpenAIMessages,
+  BedrockAnthropicContentType,
   BedrockAnthropicMessage,
+  BedrockAnthropicMessageRole,
+  Messages,
+  OpenAIFunctionMessage,
+  OpenAIMessages,
+  OpenAIMessagesRoles,
+  Providers,
 } from "../types";
 
 export class InputFormatAdapter {
@@ -12,15 +16,34 @@ export class InputFormatAdapter {
   ): OpenAIMessages | BedrockAnthropicMessage[] {
     switch (provider) {
       case Providers.OPENAI:
-        return messages.map((msg) => ({
-          role: msg.role, // assuming role mappings are consistent
-          content: msg.content,
-        }));
+        return messages.map((msg) => {
+          if (msg.role === OpenAIMessagesRoles.FUNCTION) {
+            return {
+              role: msg.role,
+              content: msg.content,
+              name: (msg as OpenAIFunctionMessage).name,
+            };
+          }
+          return {
+            role: msg.role,
+            content: msg.content as string,
+          };
+        }) as OpenAIMessages;
+
       case Providers.ANTHROPIC_BEDROCK:
         return messages.map((msg) => ({
-          role: msg.role === "user" ? "USER" : "ASSISTANT", // Map roles to Bedrock's format
-          content: { type: "text", text: msg.content },
-        }));
+          role:
+            msg.role === OpenAIMessagesRoles.USER
+              ? BedrockAnthropicMessageRole.USER
+              : BedrockAnthropicMessageRole.ASSISTANT,
+          content: [
+            {
+              type: BedrockAnthropicContentType.TEXT,
+              text: msg.content as string,
+            },
+          ],
+        })) as BedrockAnthropicMessage[];
+
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }

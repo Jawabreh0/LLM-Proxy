@@ -7,11 +7,17 @@ import {
 
 export class ProviderFinder {
   static getProvider(model: SupportedLLMs): Providers {
-    if (Object.values(OpenAISupportedLLMs).includes(model)) {
+    if (
+      model.type === "OpenAI" &&
+      Object.values(OpenAISupportedLLMs).includes(model.model)
+    ) {
       return Providers.OPENAI;
-    } else if (Object.values(BedrockAnthropicSupportedLLMs).includes(model)) {
+    } else if (
+      model.type === "BedrockAnthropic" &&
+      Object.values(BedrockAnthropicSupportedLLMs).includes(model.model)
+    ) {
       return Providers.ANTHROPIC_BEDROCK;
     }
-    throw new Error(`Unsupported model: ${model}`);
+    throw new Error(`Unsupported model: ${model.model}`);
   }
 }
