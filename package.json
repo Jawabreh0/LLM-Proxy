@@ -1,9 +1,15 @@
 {
   "name": "llm-proxy",
-  "version": "1.0.0",
-  "description": "An LLM Proxy that allows the  user to interact with different language models from different providers using unified request and response formats.",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "An LLM Proxy that allows the user to interact with different language models from different providers using unified request and response formats.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
     "test": "jest --config jest.config.js",
     "dev": "ts-node src/index.ts"
   },
