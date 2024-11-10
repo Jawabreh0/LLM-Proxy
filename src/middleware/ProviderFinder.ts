@@ -1,4 +1,17 @@
-/*
+import {
+  BedrockAnthropicSupportedLLMs,
+  OpenAISupportedLLMs,
+  Providers,
+  SupportedLLMs,
+} from "../types";
 
-This is a middleware that is responsible for finding the provider based on the user input.
-*/
+export class ProviderFinder {
+  static getProvider(model: SupportedLLMs): Providers {
+    if (Object.values(OpenAISupportedLLMs).includes(model)) {
+      return Providers.OPENAI;
+    } else if (Object.values(BedrockAnthropicSupportedLLMs).includes(model)) {
+      return Providers.ANTHROPIC_BEDROCK;
+    }
+    throw new Error(`Unsupported model: ${model}`);
+  }
+}
