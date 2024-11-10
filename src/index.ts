@@ -143,3 +143,5 @@ async function* handleStreamResponse(
       : OutputFormatAdapter.adaptResponse(chunk, provider);
   }
 }
+
+export * from "./types";
