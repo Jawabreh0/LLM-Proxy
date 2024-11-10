@@ -1,4 +1,3 @@
-import { config } from "../config/config";
 import {
   BedrockAnthropicParsedChunk,
   BedrockAnthropicResponse,
@@ -15,12 +14,12 @@ import { ClientService } from "./ClientService";
 export class AwsBedrockAnthropicService implements ClientService {
   private bedrock: BedrockRuntimeClient;
 
-  constructor() {
+  constructor(awsAccessKey: string, awsSecretKey: string, region: string) {
     this.bedrock = new BedrockRuntimeClient({
-      region: config.awsRegion,
+      region,
       credentials: {
-        accessKeyId: config.awsAccessKey,
-        secretAccessKey: config.awsSecretKey,
+        accessKeyId: awsAccessKey,
+        secretAccessKey: awsSecretKey,
       },
     });
   }
@@ -33,10 +32,8 @@ export class AwsBedrockAnthropicService implements ClientService {
     systemPrompt?: string,
     tools?: any
   ): Promise<BedrockAnthropicResponse> {
-    // Extract model ID from SupportedLLMs if it's of type 'BedrockAnthropic'
     const modelId =
       model?.type === "BedrockAnthropic" ? model.model : undefined;
-
     if (!modelId) {
       throw new Error("Invalid model type for AwsBedrockAnthropicService");
     }
@@ -58,9 +55,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const response = await this.bedrock.send(command);
-    const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-
-    return responseBody;
+    return JSON.parse(new TextDecoder().decode(response.body));
   }
 
   async *generateStreamCompletion(
@@ -72,10 +67,8 @@ export class AwsBedrockAnthropicService implements ClientService {
     tools?: any,
     stream?: boolean
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    // Extract model ID from SupportedLLMs if it's of type 'BedrockAnthropic'
     const modelId =
       model?.type === "BedrockAnthropic" ? model.model : undefined;
-
     if (!modelId) {
       throw new Error("Invalid model type for AwsBedrockAnthropicService");
     }
