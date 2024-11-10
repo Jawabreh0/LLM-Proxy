@@ -10,7 +10,7 @@ import {
 } from "../types";
 
 export class InputFormatAdapter {
-  static adaptRequest(
+  static adaptMessages(
     messages: Messages,
     provider: Providers
   ): OpenAIMessages | BedrockAnthropicMessage[] {

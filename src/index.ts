@@ -1,162 +1,145 @@
-// // index.ts
-// import readline from "readline";
-// import { config } from "./config/config";
-// import { OpenAISupportedLLMs, Providers } from "./types";
-// import { OpenAIClient } from "./clients/OpenAIClient";
+import { ProviderFinder } from "./middleware/ProviderFinder";
+import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
+import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
+import { AwsBedrockAnthropicService } from "./services/AwsBedrockAnthropicService";
+import { OpenAIService } from "./services/OpenAIService";
+import {
+  Messages,
+  SupportedLLMs,
+  LLMResponse,
+  Providers,
+  OpenAIMessages,
+  BedrockAnthropicMessages,
+} from "./types";
 
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
+// Define the credentials interface for flexibility
+interface Credentials {
+  apiKey?: string;
+  awsConfig?: { accessKeyId: string; secretAccessKey: string; region: string };
+}
 
-// const providers = Object.values(Providers);
-// const models = Object.values(OpenAISupportedLLMs);
-// const temperatures = [0.3, 0.5, 0.7, 1.0];
-// const maxTokens = 1000;
+// Main function to handle both streaming and non-streaming requests
+export async function generateLLMResponse(
+  messages: Messages,
+  model: SupportedLLMs,
+  maxTokens: number,
+  temperature: number,
+  systemPrompt: string,
+  tools: any,
+  stream: boolean = false,
+  credentials: Credentials
+): Promise<LLMResponse | AsyncGenerator<LLMResponse>> {
+  // Step 2: Identify the provider based on the model
+  const provider = ProviderFinder.getProvider(model);
 
-// const prompt = (query: string): Promise<string> => {
-//   return new Promise((resolve) => rl.question(query, resolve));
-// };
+  // Initialize the correct service based on the provider
+  let service: OpenAIService | AwsBedrockAnthropicService;
+  if (provider === Providers.OPENAI) {
+    if (!credentials.apiKey) {
+      throw new Error("OpenAI API key is required for OpenAI models.");
+    }
+    service = new OpenAIService(credentials.apiKey);
+  } else if (provider === Providers.ANTHROPIC_BEDROCK) {
+    const awsConfig = credentials.awsConfig;
+    if (!awsConfig) {
+      throw new Error("AWS credentials are required for Bedrock models.");
+    }
+    service = new AwsBedrockAnthropicService(
+      awsConfig.accessKeyId,
+      awsConfig.secretAccessKey,
+      awsConfig.region
+    );
+  } else {
+    throw new Error("Unsupported provider");
+  }
 
-// const main = async () => {
-//   console.log("Welcome! Please select a provider:");
-//   providers.forEach((provider, index) =>
-//     console.log(`${index + 1}. ${provider}`)
-//   );
+  // Step 3: If the provider is not OpenAI, adapt the input to provider format
+  const adaptedMessages =
+    provider !== Providers.OPENAI
+      ? InputFormatAdapter.adaptMessages(messages, provider)
+      : messages;
 
-//   const providerChoice = parseInt(await prompt("Select provider (1): "), 10);
-//   const provider = providers[providerChoice - 1];
-//   if (provider !== Providers.OPENAI) {
-//     console.log("Invalid choice. Only OpenAI is available for now.");
-//     rl.close();
-//     return;
-//   }
+  // Step 4: Process the response depending on whether streaming is requested
+  if (stream) {
+    return handleStreamResponse(
+      service,
+      adaptedMessages,
+      model,
+      maxTokens,
+      temperature,
+      systemPrompt,
+      tools,
+      provider
+    );
+  } else {
+    return handleNonStreamResponse(
+      service,
+      adaptedMessages,
+      model,
+      maxTokens,
+      temperature,
+      systemPrompt,
+      tools,
+      provider
+    );
+  }
+}
 
-//   console.log("\nChoose a model:");
-//   models.forEach((model, index) => console.log(`${index + 1}. ${model}`));
-//   const modelChoice = parseInt(await prompt("Select model (1 or 2): "), 10);
-//   const model = models[modelChoice - 1] || models[0];
+// Helper for non-streaming response
+async function handleNonStreamResponse(
+  service: OpenAIService | AwsBedrockAnthropicService,
+  messages: Messages,
+  model: SupportedLLMs,
+  maxTokens: number,
+  temperature: number,
+  systemPrompt: string,
+  tools: any,
+  provider: Providers
+): Promise<LLMResponse> {
+  const response = await service.generateCompletion(
+    provider === Providers.OPENAI
+      ? (messages as OpenAIMessages)
+      : (messages as BedrockAnthropicMessages as any),
+    model,
+    maxTokens,
+    temperature,
+    systemPrompt,
+    tools
+  );
 
-//   console.log("\nChoose a temperature:");
-//   temperatures.forEach((temp, index) => console.log(`${index + 1}. ${temp}`));
-//   const temperatureChoice = parseInt(
-//     await prompt("Select temperature (1-4): "),
-//     10
-//   );
-//   const temperature = temperatures[temperatureChoice - 1] || temperatures[0];
+  // Step 6: Adapt the response if provider is not OpenAI
+  return provider === Providers.OPENAI
+    ? response
+    : OutputFormatAdapter.adaptResponse(response, provider);
+}
 
-//   const systemPrompt = await prompt("\nEnter a system prompt: ");
+// Helper for streaming response
+async function* handleStreamResponse(
+  service: OpenAIService | AwsBedrockAnthropicService,
+  messages: Messages,
+  model: SupportedLLMs,
+  maxTokens: number,
+  temperature: number,
+  systemPrompt: string,
+  tools: any,
+  provider: Providers
+): AsyncGenerator<LLMResponse> {
+  const stream = service.generateStreamCompletion(
+    provider === Providers.OPENAI
+      ? (messages as OpenAIMessages)
+      : (messages as BedrockAnthropicMessages as any),
+    model,
+    maxTokens,
+    temperature,
+    systemPrompt,
+    tools,
+    true
+  );
 
-//   const chatUtil = new OpenAIClient(config.openaiApiKey, systemPrompt);
-
-//   // Choose interaction type
-//   console.log("\nSelect interaction type:");
-//   console.log("1. Non-streaming (full response)");
-//   console.log("2. Streaming (real-time response)");
-//   const interactionTypeChoice = parseInt(await prompt("Choose (1 or 2): "), 10);
-//   const useStreaming = interactionTypeChoice === 2;
-
-//   console.log('\nYou can start chatting now. Type "exit" to quit.\n');
-
-//   while (true) {
-//     const userInput = await prompt("You: ");
-//     if (userInput.toLowerCase() === "exit") break;
-
-//     if (useStreaming) {
-//       // Stream mode: respond with each token as it arrives
-//       console.log("Assistant: ");
-//       for await (const token of chatUtil.sendMessageStream(
-//         userInput,
-//         model,
-//         maxTokens,
-//         temperature
-//       )) {
-//         process.stdout.write(token); // Output each token incrementally
-//       }
-//       console.log(); // Newline after the response is complete
-//     } else {
-//       // Non-streaming mode: wait for full response
-//       const response = await chatUtil.sendMessage(
-//         userInput,
-//         model,
-//         maxTokens,
-//         temperature
-//       );
-//       console.log(`Assistant: ${response}`);
-//     }
-//   }
-
-//   rl.close();
-// };
-
-// main();
-
-// // async function exampleNonStreamingUsage() {
-// //   const apiKey = "--";
-// //   const systemPrompt = "You are an AI assistant.";
-// //   const openAIChat = new OpenAIChatExample(apiKey, systemPrompt);
-
-// //   const response = await openAIChat.sendMessage(
-// //     "Tell me a joke.",
-// //     OpenAISupportedLLMs.GPT_4_O_LAEST,
-// //     100,
-// //     0.7
-// //   );
-
-// //   console.log("Non-streaming response:", response);
-// // }
-
-// // async function exampleStreamingUsage() {
-// //   const apiKey = "--";
-// //   const systemPrompt = "You are an AI assistant.";
-// //   const openAIChat = new OpenAIChatExample(apiKey, systemPrompt);
-
-// //   console.log("Streaming response:");
-// //   for await (const content of openAIChat.sendMessageStream(
-// //     "Tell me a long story.",
-// //     OpenAISupportedLLMs.GPT_4_O_LAEST,
-// //     1000,
-// //     0.7
-// //   )) {
-// //     process.stdout.write(content); // Print each token as it arrives
-// //   }
-// // }
-
-// // // exampleStreamingUsage();
-// // async function exampleStreamingUsage() {
-// //   const systemPrompt = "You are an AI assistant.";
-// //   const model = BedrockAnthropicSupportedLLMs.CLAUDE_3_SONNET; // Replace with the exact model you need
-// //   const maxTokens = 1000;
-// //   const temperature = 0.7;
-
-// //   // Construct messages following the BedrockAnthropicMessages format
-// //   const messages: Messages = [
-// //     {
-// //       role: BedrockAnthropicMessageRole.USER, // Use correct role based on BedrockAnthropicMessageRole
-// //       content: [
-// //         {
-// //           type: BedrockAnthropicContentType.TEXT, // Use correct content type
-// //           text: "Tell me a long story.",
-// //         },
-// //       ],
-// //     },
-// //   ];
-
-// //   const bedrockChat = new AwsBedrockAnthropicChatExample();
-
-// //   console.log("Streaming response:");
-// //   for await (const content of bedrockChat.sendMessageStream(
-// //     messages,
-// //     model,
-// //     maxTokens,
-// //     temperature,
-// //     systemPrompt
-// //   )) {
-// //     if (content !== undefined) {
-// //       process.stdout.write(content); // Print each token as it arrives
-// //     }
-// //   }
-// // }
-
-// // // Call the function to test streaming output
-// // exampleStreamingUsage();
+  // Step 7: Yield adapted chunks if the provider is not OpenAI
+  for await (const chunk of stream) {
+    yield provider === Providers.OPENAI
+      ? chunk
+      : OutputFormatAdapter.adaptResponse(chunk, provider);
+  }
+}

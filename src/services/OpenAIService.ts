@@ -13,7 +13,9 @@ export class OpenAIService implements ClientService {
     messages: OpenAIMessages,
     model: SupportedLLMs,
     maxTokens: number,
-    temperature: number
+    temperature: number,
+    systemPrompt?: string, // Optional parameter
+    tools?: any // Optional parameter
   ): Promise<OpenAIResponse> {
     if (model.type !== "OpenAI") {
       throw new Error("Unsupported model type for OpenAIService.");
@@ -37,7 +39,10 @@ export class OpenAIService implements ClientService {
     messages: OpenAIMessages,
     model: SupportedLLMs,
     maxTokens: number,
-    temperature: number
+    temperature: number,
+    systemPrompt?: string, // Optional parameter
+    tools?: any, // Optional parameter
+    stream?: boolean // Optional parameter
   ): AsyncGenerator<any, void, unknown> {
     if (model.type !== "OpenAI") {
       throw new Error("Unsupported model type for OpenAIService.");
