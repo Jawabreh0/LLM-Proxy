@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function testNonStreamOpenAI() {
+  console.log("Starting non-streaming test...");
+
   try {
     const messages: OpenAIMessages = [
       {
