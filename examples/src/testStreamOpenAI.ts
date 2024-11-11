@@ -12,7 +12,7 @@ async function testStreamOpenAI() {
     const messages: OpenAIMessages = [
       {
         role: OpenAIMessagesRoles.USER,
-        content: "tell me a story",
+        content: "tell me short a story",
       },
     ];
 

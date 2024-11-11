@@ -6,14 +6,13 @@ import { testStreamOpenAI } from "./testStreamOpenAI";
 
 // import { testStreamOpenAI } from "./testStreamOpenAI";
 
-// testNonStreamAnthropic();
-// testNonStreamOpenAI();
+console.log("Starting tests...");
+testNonStreamAnthropic();
+testNonStreamOpenAI();
 
-// testStreamOpenAI();
-
-// testStreamOpenAI()
-//   .then(() => console.log("Test execution completed"))
-//   .catch((error) => console.error("Test execution failed:", error));
+testStreamOpenAI()
+  .then(() => console.log("Test execution completed"))
+  .catch((error) => console.error("Test execution failed:", error));
 
 testStreamAnthropic()
   .then(() => console.log("Test execution completed"))

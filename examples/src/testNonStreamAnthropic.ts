@@ -25,7 +25,7 @@ async function testNonStreamAnthropic() {
     const messages: OpenAIMessages = [
       {
         role: OpenAIMessagesRoles.USER,
-        content: "Who are you?",
+        content: "tell me short a story",
       },
     ];
 
