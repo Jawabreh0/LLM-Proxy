@@ -26,6 +26,7 @@ export class ResponseValidationError extends AdapterError {
     this.name = "ResponseValidationError";
   }
 }
+
 import {
   OpenAIResponse,
   LLMResponse,
@@ -80,14 +81,48 @@ export class OutputFormatAdapter {
   private static adaptAnthropicBedrockResponse(
     response: BedrockAnthropicParsedChunk
   ): OpenAIResponse {
+    // Handle stop messages (both content_block_stop and message_stop)
+    if (
+      response.type === "content_block_stop" ||
+      response.type === "message_stop"
+    ) {
+      const metrics = response["amazon-bedrock-invocationMetrics"];
+
+      return {
+        id: `stream-${Date.now()}`,
+        object: "text_completion",
+        created: Date.now(),
+        model: "anthropic.claude-3-haiku",
+        choices: [
+          {
+            index: 0,
+            message: {
+              role: "assistant",
+              content: "", // Empty content for stop message
+            },
+            logprobs: null,
+            finish_reason: "stop",
+          },
+        ],
+        usage: {
+          prompt_tokens: metrics?.inputTokenCount || 0,
+          completion_tokens: metrics?.outputTokenCount || 0,
+          total_tokens:
+            (metrics?.inputTokenCount || 0) + (metrics?.outputTokenCount || 0),
+          prompt_tokens_details: { cached_tokens: 0 },
+          completion_tokens_details: { reasoning_tokens: 0 },
+        },
+        system_fingerprint: "anthropic_translation",
+      };
+    }
+
     // Handle streaming content blocks
-    // 
     if (response.type === "content_block_start" || response.content_block) {
       return {
         id: `stream-${Date.now()}`,
         object: "text_completion",
         created: Date.now(),
-        model: "anthropic.claude-3-haiku", // This will be overwritten in complete response
+        model: "anthropic.claude-3-haiku",
         choices: [
           {
             index: 0,
@@ -159,7 +194,7 @@ export class OutputFormatAdapter {
       }
     }
 
-    // Handle other message types (delta updates, metrics, etc.)
+    // Handle delta updates
     if (response.delta) {
       return {
         id: `stream-${Date.now()}`,
