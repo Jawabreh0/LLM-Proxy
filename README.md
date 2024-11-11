@@ -63,6 +63,9 @@ Workflow Overview
 
 Below is a flow diagram illustrating how llm-proxy processes requests.
 
+![LLM Proxy Flow Diagram](docs/flow.png)
+
+
 -- diagram goes here
 
 ## Contributing
