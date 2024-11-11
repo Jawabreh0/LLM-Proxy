@@ -6,7 +6,7 @@ import { OpenAIService } from "./services/OpenAIService";
 import {
   Messages,
   SupportedLLMs,
-  ProxyResponse,
+  OpenAIResponse,
   Providers,
   OpenAIMessages,
   BedrockAnthropicMessages,
@@ -18,7 +18,7 @@ interface Credentials {
   awsConfig?: { accessKeyId: string; secretAccessKey: string; region: string };
 }
 
-// Main function to handle both streaming and non-streaming requests
+// Main function for non-streaming requests
 export async function generateLLMResponse(
   messages: Messages,
   model: SupportedLLMs,
@@ -26,9 +26,8 @@ export async function generateLLMResponse(
   temperature: number,
   systemPrompt: string,
   tools: any,
-  stream: boolean = false,
   credentials: Credentials
-): Promise<ProxyResponse | AsyncGenerator<ProxyResponse>> {
+): Promise<OpenAIResponse> {
   // Step 2: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
 
@@ -59,43 +58,6 @@ export async function generateLLMResponse(
       ? InputFormatAdapter.adaptMessages(messages, provider)
       : messages;
 
-  // Step 4: Process the response depending on whether streaming is requested
-  if (stream) {
-    return handleStreamResponse(
-      service,
-      adaptedMessages,
-      model,
-      maxTokens,
-      temperature,
-      systemPrompt,
-      tools,
-      provider
-    );
-  } else {
-    return handleNonStreamResponse(
-      service,
-      adaptedMessages,
-      model,
-      maxTokens,
-      temperature,
-      systemPrompt,
-      tools,
-      provider
-    );
-  }
-}
-
-// Helper for non-streaming response
-async function handleNonStreamResponse(
-  service: OpenAIService | AwsBedrockAnthropicService,
-  messages: Messages,
-  model: SupportedLLMs,
-  maxTokens: number,
-  temperature: number,
-  systemPrompt: string,
-  tools: any,
-  provider: Providers
-): Promise<ProxyResponse> {
   const response = await service.generateCompletion(
     provider === Providers.OPENAI
       ? (messages as OpenAIMessages)
@@ -107,23 +69,49 @@ async function handleNonStreamResponse(
     tools
   );
 
-  // Step 6: Adapt the response if provider is not OpenAI
+  // Adapt the response if provider is not OpenAI
   return provider === Providers.OPENAI
-    ? (response as ProxyResponse)
-    : (OutputFormatAdapter.adaptResponse(response, provider) as ProxyResponse);
+    ? (response as OpenAIResponse)
+    : (OutputFormatAdapter.adaptResponse(response, provider) as OpenAIResponse);
 }
 
-// Helper for streaming response
-async function* handleStreamResponse(
-  service: OpenAIService | AwsBedrockAnthropicService,
+// Main function for streaming requests
+export async function generateLLMStreamResponse(
   messages: Messages,
   model: SupportedLLMs,
   maxTokens: number,
   temperature: number,
   systemPrompt: string,
   tools: any,
-  provider: Providers
-): AsyncGenerator<ProxyResponse> {
+  credentials: Credentials
+): Promise<AsyncGenerator<OpenAIResponse>> {
+  const provider = ProviderFinder.getProvider(model);
+
+  let service: OpenAIService | AwsBedrockAnthropicService;
+  if (provider === Providers.OPENAI) {
+    if (!credentials.apiKey) {
+      throw new Error("OpenAI API key is required for OpenAI models.");
+    }
+    service = new OpenAIService(credentials.apiKey);
+  } else if (provider === Providers.ANTHROPIC_BEDROCK) {
+    const awsConfig = credentials.awsConfig;
+    if (!awsConfig) {
+      throw new Error("AWS credentials are required for Bedrock models.");
+    }
+    service = new AwsBedrockAnthropicService(
+      awsConfig.accessKeyId,
+      awsConfig.secretAccessKey,
+      awsConfig.region
+    );
+  } else {
+    throw new Error("Unsupported provider");
+  }
+
+  const adaptedMessages =
+    provider !== Providers.OPENAI
+      ? InputFormatAdapter.adaptMessages(messages, provider)
+      : messages;
+
   const stream = service.generateStreamCompletion(
     provider === Providers.OPENAI
       ? (messages as OpenAIMessages)
@@ -136,12 +124,19 @@ async function* handleStreamResponse(
     true
   );
 
-  // Step 7: Yield adapted chunks if the provider is not OpenAI
-  for await (const chunk of stream) {
-    yield provider === Providers.OPENAI
-      ? (chunk as ProxyResponse)
-      : (OutputFormatAdapter.adaptResponse(chunk, provider) as ProxyResponse);
+  // Create and return the async generator
+  async function* streamGenerator(): AsyncGenerator<OpenAIResponse> {
+    for await (const chunk of stream) {
+      yield provider === Providers.OPENAI
+        ? (chunk as OpenAIResponse)
+        : (OutputFormatAdapter.adaptResponse(
+            chunk,
+            provider
+          ) as OpenAIResponse);
+    }
   }
+
+  return streamGenerator();
 }
 
 export * from "./types";
