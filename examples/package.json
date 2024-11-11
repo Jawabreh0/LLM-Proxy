@@ -11,7 +11,7 @@
   "dependencies": {
     "@types/inquirer": "^9.0.7",
     "inquirer": "^12.0.1",
-    "llm-proxy": "^1.0.7"
+    "llm-proxy": "^1.0.9"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
