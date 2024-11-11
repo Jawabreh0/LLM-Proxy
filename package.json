@@ -1,6 +1,6 @@
 {
   "name": "llm-proxy",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "An LLM Proxy that allows the user to interact with different language models from different providers using unified request and response formats.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
