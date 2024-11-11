@@ -1,8 +1,8 @@
-// // import { testNonStreamAnthropic } from "./testNonStreamAnthropic";
-// import { testNonStreamOpenAI } from "./testNonStreamOpenAI";
+import { testNonStreamAnthropic } from "./testNonStreamAnthropic";
+import { testNonStreamOpenAI } from "./testNonStreamOpenAI";
 
 import { testStreamAnthropic } from "./testStreamAnthropic";
-// import { testStreamOpenAI } from "./testStreamOpenAI";
+import { testStreamOpenAI } from "./testStreamOpenAI";
 
 // import { testStreamOpenAI } from "./testStreamOpenAI";
 

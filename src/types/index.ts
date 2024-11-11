@@ -216,7 +216,7 @@ export interface BedrockAnthropicMetrics {
 }
 
 export type BedrockAnthropicParsedChunk = {
-  type: "message_start";
+  type: string;
   message?: BedrockAnthropicMessageChunk;
   content_block?: BedrockAnthropicContentBlock;
   delta?: BedrockAnthropicContentBlock;

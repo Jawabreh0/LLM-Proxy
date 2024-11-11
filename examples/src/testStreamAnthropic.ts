@@ -25,7 +25,7 @@ async function testStreamAnthropic() {
     const messages: OpenAIMessages = [
       {
         role: OpenAIMessagesRoles.USER,
-        content: "tell me a story",
+        content: "Hi, how are you ?",
       },
     ];
 
@@ -51,9 +51,9 @@ async function testStreamAnthropic() {
 
     for await (const chunk of stream) {
       // Use type assertion to access the delta property
-      const deltaContent = (chunk.choices[0] as any).delta?.content;
+      const deltaContent = chunk.choices[0];
       if (deltaContent) {
-        process.stdout.write(deltaContent);
+        process.stdout.write(deltaContent.message.content);
       }
     }
     console.log("\n"); // Add a newline at the end
