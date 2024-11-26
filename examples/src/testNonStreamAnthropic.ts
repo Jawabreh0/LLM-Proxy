@@ -31,6 +31,7 @@ async function testNonStreamAnthropic() {
 
     // Ensure AWS credentials are properly formatted
     const credentials = {
+      apiKey: process.env.OPENAI_API_KEY,
       awsConfig: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -40,10 +41,7 @@ async function testNonStreamAnthropic() {
 
     const response = await generateLLMResponse(
       messages,
-      {
-        type: "BedrockAnthropic",
-        model: BedrockAnthropicSupportedLLMs.CLAUDE_3_HAIKU,
-      },
+      "anthropic.claude-3-haiku-20240307-v1:0",
       1000,
       0.7,
       "You are a helpful assistant",

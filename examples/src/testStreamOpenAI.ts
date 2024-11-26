@@ -2,7 +2,6 @@ import {
   generateLLMStreamResponse,
   OpenAIMessages,
   OpenAIMessagesRoles,
-  OpenAISupportedLLMs,
 } from "llm-proxy/dist";
 import dotenv from "dotenv";
 dotenv.config();
@@ -18,10 +17,7 @@ async function testStreamOpenAI() {
 
     const stream = await generateLLMStreamResponse(
       messages,
-      {
-        type: "OpenAI",
-        model: OpenAISupportedLLMs.GPT_4_O,
-      },
+      "gpt-4o",
       1000,
       0.7,
       "You are a helpful assistant",
