@@ -61,7 +61,7 @@ export enum OpenAISupportedLLMs {
 
 export interface OpenAIChoices {
   index: number;
-  message: any; // TODO: update this guys types as well
+  message: any; // TODO: update this guys types as well -- this is an important one --
   logprobs: any; // TODO: define logprobs type
   finish_reason: string;
 }

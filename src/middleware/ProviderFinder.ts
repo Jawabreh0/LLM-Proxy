@@ -2,22 +2,25 @@ import {
   BedrockAnthropicSupportedLLMs,
   OpenAISupportedLLMs,
   Providers,
-  SupportedLLMs,
 } from "../types";
 
 export class ProviderFinder {
-  static getProvider(model: SupportedLLMs): Providers {
+  static getProvider(model: string): Providers {
+    // Check if the model belongs to OpenAI-supported LLMs
     if (
-      model.type === "OpenAI" &&
-      Object.values(OpenAISupportedLLMs).includes(model.model)
+      Object.values(OpenAISupportedLLMs).includes(model as OpenAISupportedLLMs)
     ) {
       return Providers.OPENAI;
-    } else if (
-      model.type === "BedrockAnthropic" &&
-      Object.values(BedrockAnthropicSupportedLLMs).includes(model.model)
+    }
+    // Check if the model belongs to Bedrock Anthropic-supported LLMs
+    if (
+      Object.values(BedrockAnthropicSupportedLLMs).includes(
+        model as BedrockAnthropicSupportedLLMs
+      )
     ) {
       return Providers.ANTHROPIC_BEDROCK;
     }
-    throw new Error(`Unsupported model: ${model.model}`);
+    // Throw an error for unsupported models
+    throw new Error(`Unsupported model: ${model}`);
   }
 }

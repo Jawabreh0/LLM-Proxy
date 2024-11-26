@@ -29,10 +29,7 @@ async function testStreamAnthropic() {
 
     const stream = await generateLLMStreamResponse(
       messages,
-      {
-        type: "BedrockAnthropic",
-        model: BedrockAnthropicSupportedLLMs.CLAUDE_3_HAIKU,
-      },
+      "anthropic.claude-3-haiku-20240307-v1:0",
       1000,
       0.7,
       "You are a helpful assistant",

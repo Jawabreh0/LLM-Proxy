@@ -7,12 +7,12 @@ import { testStreamOpenAI } from "./testStreamOpenAI";
 // import { testStreamOpenAI } from "./testStreamOpenAI";
 
 console.log("Starting tests...");
-testNonStreamAnthropic();
-testNonStreamOpenAI();
+// testNonStreamAnthropic();
+// testNonStreamOpenAI();
 
-testStreamOpenAI()
-  .then(() => console.log("Test execution completed"))
-  .catch((error) => console.error("Test execution failed:", error));
+// testStreamOpenAI()
+//   .then(() => console.log("Test execution completed"))
+//   .catch((error) => console.error("Test execution failed:", error));
 
 testStreamAnthropic()
   .then(() => console.log("Test execution completed"))

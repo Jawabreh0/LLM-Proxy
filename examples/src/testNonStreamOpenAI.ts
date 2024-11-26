@@ -21,16 +21,18 @@ async function testNonStreamOpenAI() {
 
     const response = await generateLLMResponse(
       messages,
-      {
-        type: "OpenAI",
-        model: OpenAISupportedLLMs.GPT_4_O,
-      },
+      "gpt-4o",
       1000,
       0.7,
       "You are a helpful assistant",
       [],
       {
         apiKey: process.env.OPENAI_API_KEY,
+        awsConfig: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+          region: process.env.AWS_REGION || "",
+        },
       }
     );
 
