@@ -25,7 +25,7 @@ export class AwsBedrockAnthropicService implements ClientService {
 
   async generateCompletion(
     messages: Messages,
-    model?: string, // Updated to string
+    model?: string,
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
@@ -45,7 +45,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const command = new InvokeModelCommand({
-      modelId: model, // Use the string directly
+      modelId: model,
       body,
       contentType: "application/json",
       accept: "application/json",
@@ -57,7 +57,7 @@ export class AwsBedrockAnthropicService implements ClientService {
 
   async *generateStreamCompletion(
     messages: Messages,
-    model?: string, // Updated to string
+    model?: string,
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
@@ -78,7 +78,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const command = new InvokeModelWithResponseStreamCommand({
-      modelId: model, // Use the string directly
+      modelId: model,
       body,
       contentType: "application/json",
       accept: "application/json",

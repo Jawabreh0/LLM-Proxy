@@ -20,7 +20,7 @@ interface Credentials {
 // Main function for non-streaming requests
 export async function generateLLMResponse(
   messages: Messages,
-  model: string, // Updated to string
+  model: string,
   maxTokens: number,
   temperature: number,
   systemPrompt: string,
@@ -77,7 +77,7 @@ export async function generateLLMResponse(
 // Main function for streaming requests
 export async function generateLLMStreamResponse(
   messages: Messages,
-  model: string, // Updated to string
+  model: string,
   maxTokens: number,
   temperature: number,
   systemPrompt: string,
