@@ -10,10 +10,10 @@ console.log("Starting tests...");
 // testNonStreamAnthropic();
 // testNonStreamOpenAI();
 
-// testStreamOpenAI()
-//   .then(() => console.log("Test execution completed"))
-//   .catch((error) => console.error("Test execution failed:", error));
-
-testStreamAnthropic()
+testStreamOpenAI()
   .then(() => console.log("Test execution completed"))
   .catch((error) => console.error("Test execution failed:", error));
+
+// testStreamAnthropic()
+//   .then(() => console.log("Test execution completed"))
+//   .catch((error) => console.error("Test execution failed:", error));
