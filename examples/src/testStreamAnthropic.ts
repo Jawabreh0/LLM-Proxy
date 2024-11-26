@@ -46,7 +46,8 @@ async function testStreamAnthropic() {
 
     for await (const chunk of stream) {
       // Use type assertion to access the delta property
-      // console.log("\n\n\n\n", chunk, chunk.choices[0].message, "\n\n\n\n");
+      // console.log("Response (chunk)", chunk);
+      // console.log("Choices", chunk.choices[0]);
       const deltaContent = chunk.choices[0];
       if (deltaContent) {
         process.stdout.write(deltaContent.message.content);
