@@ -78,7 +78,7 @@ export class OutputFormatAdapter {
         choices: [
           {
             index: 0,
-            message: {
+            delta: {
               role: "assistant",
               content: "",
             },
@@ -109,7 +109,7 @@ export class OutputFormatAdapter {
       choices: [
         {
           index: 0,
-          message: {
+          delta: {
             role: "assistant",
             content,
           },
