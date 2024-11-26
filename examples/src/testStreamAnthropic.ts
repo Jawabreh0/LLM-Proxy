@@ -43,16 +43,14 @@ async function testStreamAnthropic() {
         },
       }
     );
-
     for await (const chunk of stream) {
-      // Use type assertion to access the delta property
-      // console.log("Response (chunk)", chunk);
-      // console.log("Choices", chunk.choices[0]);
-      const deltaContent = chunk.choices[0];
+      if (!chunk) continue; // Skip null chunks
+      const deltaContent = (chunk.choices[0] as any)?.delta?.content;
       if (deltaContent) {
-        process.stdout.write(deltaContent.message.content);
+        process.stdout.write(deltaContent);
       }
     }
+
     console.log("\n"); // Add a newline at the end
   } catch (error) {
     console.error("Error:", error);

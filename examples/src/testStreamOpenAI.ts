@@ -28,8 +28,7 @@ async function testStreamOpenAI() {
     );
 
     for await (const chunk of stream) {
-      // Use type assertion to access the delta property
-      // TODO: this one is not supposed to be any, i guess we need to fix the type of the stream response in the package
+      if (!chunk) continue;
       const deltaContent = (chunk.choices[0] as any).delta?.content;
       if (deltaContent) {
         process.stdout.write(deltaContent);
