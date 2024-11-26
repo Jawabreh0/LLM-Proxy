@@ -55,6 +55,9 @@ export class OpenAIService implements ClientService {
         max_tokens: maxTokens,
         temperature,
         stream: true,
+        stream_options: {
+          include_usage: true,
+        },
       });
 
       for await (const chunk of stream) {
