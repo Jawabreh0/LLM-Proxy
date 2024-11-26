@@ -5,7 +5,6 @@ import { AwsBedrockAnthropicService } from "./services/AwsBedrockAnthropicServic
 import { OpenAIService } from "./services/OpenAIService";
 import {
   Messages,
-  SupportedLLMs,
   OpenAIResponse,
   Providers,
   OpenAIMessages,
@@ -21,7 +20,7 @@ interface Credentials {
 // Main function for non-streaming requests
 export async function generateLLMResponse(
   messages: Messages,
-  model: SupportedLLMs,
+  model: string, // Updated to string
   maxTokens: number,
   temperature: number,
   systemPrompt: string,
@@ -61,7 +60,7 @@ export async function generateLLMResponse(
   const response = await service.generateCompletion(
     provider === Providers.OPENAI
       ? (messages as OpenAIMessages)
-      : (messages as BedrockAnthropicMessages as any),
+      : (adaptedMessages as BedrockAnthropicMessages as any),
     model,
     maxTokens,
     temperature,
@@ -78,7 +77,7 @@ export async function generateLLMResponse(
 // Main function for streaming requests
 export async function generateLLMStreamResponse(
   messages: Messages,
-  model: SupportedLLMs,
+  model: string, // Updated to string
   maxTokens: number,
   temperature: number,
   systemPrompt: string,
@@ -115,7 +114,7 @@ export async function generateLLMStreamResponse(
   const stream = service.generateStreamCompletion(
     provider === Providers.OPENAI
       ? (messages as OpenAIMessages)
-      : (messages as BedrockAnthropicMessages as any),
+      : (adaptedMessages as BedrockAnthropicMessages as any),
     model,
     maxTokens,
     temperature,

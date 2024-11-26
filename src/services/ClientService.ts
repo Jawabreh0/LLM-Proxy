@@ -9,7 +9,7 @@ import {
 export interface ClientService {
   generateCompletion(
     messages: Messages,
-    model?: SupportedLLMs,
+    model?: string,
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
@@ -19,7 +19,7 @@ export interface ClientService {
   // For streaming responses
   generateStreamCompletion(
     messages: Messages,
-    model?: SupportedLLMs,
+    model?: string,
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,

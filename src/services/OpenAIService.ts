@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { OpenAIMessages, OpenAIResponse, SupportedLLMs } from "../types";
+import { OpenAIMessages, OpenAIResponse } from "../types";
 import { ClientService } from "./ClientService";
 
 export class OpenAIService implements ClientService {
@@ -11,19 +11,19 @@ export class OpenAIService implements ClientService {
 
   async generateCompletion(
     messages: OpenAIMessages,
-    model: SupportedLLMs,
+    model: string, // Updated to string
     maxTokens: number,
     temperature: number,
     systemPrompt?: string, // Optional parameter
     tools?: any // Optional parameter
   ): Promise<OpenAIResponse> {
-    if (model.type !== "OpenAI") {
-      throw new Error("Unsupported model type for OpenAIService.");
+    if (!model) {
+      throw new Error("Model ID is required for OpenAIService.");
     }
 
     try {
       const response = await this.openai.chat.completions.create({
-        model: model.model,
+        model, // Use the string directly
         messages,
         max_tokens: maxTokens,
         temperature,
@@ -37,20 +37,20 @@ export class OpenAIService implements ClientService {
 
   async *generateStreamCompletion(
     messages: OpenAIMessages,
-    model: SupportedLLMs,
+    model: string, // Updated to string
     maxTokens: number,
     temperature: number,
     systemPrompt?: string, // Optional parameter
     tools?: any, // Optional parameter
     stream?: boolean // Optional parameter
   ): AsyncGenerator<any, void, unknown> {
-    if (model.type !== "OpenAI") {
-      throw new Error("Unsupported model type for OpenAIService.");
+    if (!model) {
+      throw new Error("Model ID is required for OpenAIService.");
     }
 
     try {
       const stream = await this.openai.chat.completions.create({
-        model: model.model,
+        model, // Use the string directly
         messages,
         max_tokens: maxTokens,
         temperature,

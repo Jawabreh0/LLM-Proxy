@@ -2,7 +2,6 @@ import {
   BedrockAnthropicParsedChunk,
   BedrockAnthropicResponse,
   Messages,
-  SupportedLLMs,
 } from "../types";
 import {
   InvokeModelCommand,
@@ -26,16 +25,14 @@ export class AwsBedrockAnthropicService implements ClientService {
 
   async generateCompletion(
     messages: Messages,
-    model?: SupportedLLMs,
+    model?: string, // Updated to string
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
     tools?: any
   ): Promise<BedrockAnthropicResponse> {
-    const modelId =
-      model?.type === "BedrockAnthropic" ? model.model : undefined;
-    if (!modelId) {
-      throw new Error("Invalid model type for AwsBedrockAnthropicService");
+    if (!model) {
+      throw new Error("Model ID is required for AwsBedrockAnthropicService");
     }
 
     const body = JSON.stringify({
@@ -48,7 +45,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const command = new InvokeModelCommand({
-      modelId,
+      modelId: model, // Use the string directly
       body,
       contentType: "application/json",
       accept: "application/json",
@@ -60,17 +57,15 @@ export class AwsBedrockAnthropicService implements ClientService {
 
   async *generateStreamCompletion(
     messages: Messages,
-    model?: SupportedLLMs,
+    model?: string, // Updated to string
     maxTokens?: number,
     temperature?: number,
     systemPrompt?: string,
     tools?: any,
     stream?: boolean
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    const modelId =
-      model?.type === "BedrockAnthropic" ? model.model : undefined;
-    if (!modelId) {
-      throw new Error("Invalid model type for AwsBedrockAnthropicService");
+    if (!model) {
+      throw new Error("Model ID is required for AwsBedrockAnthropicService");
     }
 
     const body = JSON.stringify({
@@ -83,7 +78,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
 
     const command = new InvokeModelWithResponseStreamCommand({
-      modelId,
+      modelId: model, // Use the string directly
       body,
       contentType: "application/json",
       accept: "application/json",
