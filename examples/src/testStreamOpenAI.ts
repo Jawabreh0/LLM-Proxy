@@ -10,7 +10,7 @@ async function testStreamOpenAI() {
   try {
     const messages: OpenAIMessages = [
       {
-        role: OpenAIMessagesRoles.USER,
+        role: "user",
         content: "hi",
       },
     ];

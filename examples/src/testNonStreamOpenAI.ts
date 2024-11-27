@@ -14,7 +14,7 @@ async function testNonStreamOpenAI() {
   try {
     const messages: OpenAIMessages = [
       {
-        role: OpenAIMessagesRoles.USER,
+        role: "user",
         content: "tell me short a story",
       },
     ];

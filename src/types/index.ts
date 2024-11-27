@@ -5,38 +5,53 @@ export enum Providers {
   COHERE_BEDROCK = "CohereBedrock", // NOTE: not supported  yet
 }
 
-// OPENAI
-export enum OpenAIMessagesRoles {
-  SYSTEM = "system",
-  USER = "user",
-  ASSISTANT = "assistant",
-  TOOL = "tool",
-  FUNCTION = "function",
+
+export type OpenAIMessagesRoles =
+  | "system"
+  | "user"
+  | "assistant"
+  | "tool"
+  | "function";
+
+export interface OpenAIStreamResponse {
+  id: string; // some string id for the message
+  object: string; // chat.completion.chunk
+  created: number; // 1732633291
+  model: string; // "gpt-4o-2024-08-06"
+  system_fingerprint: string; // "fp_7f6be3efb0";
+  choices: {
+    index: number;
+    delta: {
+      content?: string;
+    };
+    logprobs: string | null;
+    finish_reason: string | null;
+  };
 }
 
 export type OpenAISystemMessage = {
-  role: OpenAIMessagesRoles.SYSTEM;
+  role: "system";
   content: string;
 };
 
 export type OpenAIUserMessage = {
-  role: OpenAIMessagesRoles.USER;
+  role: "user";
   content: string;
 };
 
 export type OpenAIAssistantMessage = {
-  role: OpenAIMessagesRoles.ASSISTANT;
+  role: "assistant";
   content: string;
 };
 
 export type OpenAIToolMessage = {
-  role: OpenAIMessagesRoles.TOOL;
+  role: "tool";
   content: string;
   tool_call_id: string;
 };
 
 export type OpenAIFunctionMessage = {
-  role: OpenAIMessagesRoles.FUNCTION;
+  role: "function";
   content: string;
   name: string;
 };
@@ -116,10 +131,7 @@ export enum BedrockAnthropicContentType {
   TOOL_RESULT = "tool_result",
 }
 
-export enum BedrockAnthropicMessageRole {
-  USER = "user",
-  ASSISTANT = "assistant",
-}
+export type BedrockAnthropicMessageRole = "user" | "assistant";
 
 export interface BedrockAnthropicToolUseContent {
   type: BedrockAnthropicContentType.TOOL_USE;
@@ -226,23 +238,3 @@ export type BedrockAnthropicParsedChunk = {
 // GENERAL
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
 export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
-
-export type SupportedLLMs =
-  | { type: "OpenAI"; model: OpenAISupportedLLMs }
-  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs };
-
-export interface OpenAIStreamResponse {
-  id: string; // some string id for the message
-  object: string; // chat.completion.chunk
-  created: number; // 1732633291
-  model: string; // "gpt-4o-2024-08-06"
-  system_fingerprint: string; // "fp_7f6be3efb0";
-  choices: {
-    index: number;
-    delta: {
-      content?: string;
-    };
-    logprobs: string | null;
-    finish_reason: string | null;
-  };
-}

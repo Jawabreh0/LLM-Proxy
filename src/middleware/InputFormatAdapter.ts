@@ -1,11 +1,9 @@
 import {
   BedrockAnthropicContentType,
   BedrockAnthropicMessage,
-  BedrockAnthropicMessageRole,
   Messages,
   OpenAIFunctionMessage,
   OpenAIMessages,
-  OpenAIMessagesRoles,
   Providers,
 } from "../types";
 
@@ -17,7 +15,7 @@ export class InputFormatAdapter {
     switch (provider) {
       case Providers.OPENAI:
         return messages.map((msg) => {
-          if (msg.role === OpenAIMessagesRoles.FUNCTION) {
+          if (msg.role === "function") {
             return {
               role: msg.role,
               content: msg.content,
@@ -32,10 +30,7 @@ export class InputFormatAdapter {
 
       case Providers.ANTHROPIC_BEDROCK:
         return messages.map((msg) => ({
-          role:
-            msg.role === OpenAIMessagesRoles.USER
-              ? BedrockAnthropicMessageRole.USER
-              : BedrockAnthropicMessageRole.ASSISTANT,
+          role: msg.role === "user" ? "user" : "assistant",
           content: [
             {
               type: BedrockAnthropicContentType.TEXT,
