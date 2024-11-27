@@ -14,7 +14,8 @@ export class OpenAIService implements ClientService {
     model: string,
     max_tokens: number,
     temperature: number,
-    systemPrompt?: string
+    systemPrompt?: string,
+    functions?: any
   ): Promise<OpenAIResponse> {
     if (!model) {
       throw new Error("Model ID is required for OpenAIService.");
@@ -26,6 +27,7 @@ export class OpenAIService implements ClientService {
         messages,
         max_tokens,
         temperature,
+        functions,
       });
       return response as OpenAIResponse;
     } catch (error) {
@@ -39,7 +41,8 @@ export class OpenAIService implements ClientService {
     model: string,
     max_tokens: number,
     temperature: number,
-    systemPrompt?: string
+    systemPrompt?: string,
+    functions?: any
   ): AsyncGenerator<any, void, unknown> {
     if (!model) {
       throw new Error("Model ID is required for OpenAIService.");
@@ -51,6 +54,7 @@ export class OpenAIService implements ClientService {
         messages,
         max_tokens,
         temperature,
+        functions,
         stream: true,
         stream_options: {
           include_usage: true,
