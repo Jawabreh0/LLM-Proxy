@@ -28,8 +28,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     model?: string,
     maxTokens?: number,
     temperature?: number,
-    systemPrompt?: string,
-    tools?: any
+    systemPrompt?: string
   ): Promise<BedrockAnthropicResponse> {
     if (!model) {
       throw new Error("Model ID is required for AwsBedrockAnthropicService");
@@ -41,7 +40,6 @@ export class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools && tools.length > 0 ? { tools } : {}),
     });
 
     const command = new InvokeModelCommand({
@@ -60,9 +58,7 @@ export class AwsBedrockAnthropicService implements ClientService {
     model?: string,
     maxTokens?: number,
     temperature?: number,
-    systemPrompt?: string,
-    tools?: any,
-    stream?: boolean
+    systemPrompt?: string
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
     if (!model) {
       throw new Error("Model ID is required for AwsBedrockAnthropicService");
@@ -74,7 +70,6 @@ export class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools && tools.length > 0 ? { tools } : {}),
     });
 
     const command = new InvokeModelWithResponseStreamCommand({

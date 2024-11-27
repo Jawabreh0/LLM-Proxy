@@ -1,10 +1,4 @@
-import {
-  BedrockAnthropicMessageRole,
-  BedrockAnthropicSupportedLLMs,
-  generateLLMResponse,
-  OpenAIMessages,
-  OpenAIMessagesRoles,
-} from "llm-proxy/dist";
+import { generateLLMResponse } from "llm-proxy/dist";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,7 +16,7 @@ async function testNonStreamAnthropic() {
       );
     }
 
-    const messages: OpenAIMessages = [
+    const messages = [
       {
         role: "user",
         content: "tell me short a story",

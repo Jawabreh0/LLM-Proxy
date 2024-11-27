@@ -1,9 +1,4 @@
-import {
-  generateLLMResponse,
-  OpenAIMessages,
-  OpenAIMessagesRoles,
-  OpenAISupportedLLMs,
-} from "llm-proxy/dist";
+import { generateLLMResponse } from "llm-proxy/dist";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -12,7 +7,7 @@ async function testNonStreamOpenAI() {
   console.log("Starting non-streaming test...");
 
   try {
-    const messages: OpenAIMessages = [
+    const messages = [
       {
         role: "user",
         content: "tell me short a story",

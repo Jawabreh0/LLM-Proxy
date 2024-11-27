@@ -5,7 +5,6 @@ export enum Providers {
   COHERE_BEDROCK = "CohereBedrock", // NOTE: not supported  yet
 }
 
-
 export type OpenAIMessagesRoles =
   | "system"
   | "user"

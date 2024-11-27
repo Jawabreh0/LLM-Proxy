@@ -1,9 +1,4 @@
-import {
-  BedrockAnthropicSupportedLLMs,
-  generateLLMStreamResponse,
-  OpenAIMessages,
-  OpenAIMessagesRoles,
-} from "llm-proxy/dist";
+import { generateLLMStreamResponse } from "llm-proxy/dist";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -20,7 +15,7 @@ async function testStreamAnthropic() {
       );
     }
 
-    const messages: OpenAIMessages = [
+    const messages = [
       {
         role: "user",
         content: "Hi i am Ahmad",

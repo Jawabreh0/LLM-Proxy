@@ -14,8 +14,7 @@ export class OpenAIService implements ClientService {
     model: string,
     maxTokens: number,
     temperature: number,
-    systemPrompt?: string, // Optional parameter -- in openai there is no system prompt parameter
-    tools?: any // Optional parameter -- tools are part of the system prompt or the message are being managed on the client side
+    systemPrompt?: string
   ): Promise<OpenAIResponse> {
     if (!model) {
       throw new Error("Model ID is required for OpenAIService.");
@@ -40,9 +39,7 @@ export class OpenAIService implements ClientService {
     model: string,
     maxTokens: number,
     temperature: number,
-    systemPrompt?: string, // Optional parameter
-    tools?: any, // Optional parameter
-    stream?: boolean // Optional parameter
+    systemPrompt?: string
   ): AsyncGenerator<any, void, unknown> {
     if (!model) {
       throw new Error("Model ID is required for OpenAIService.");

@@ -1,14 +1,14 @@
-import {
-  generateLLMStreamResponse,
-  OpenAIMessages,
-  OpenAIMessagesRoles,
-} from "llm-proxy/dist";
+import { generateLLMStreamResponse } from "llm-proxy/dist";
 import dotenv from "dotenv";
 dotenv.config();
 
 async function testStreamOpenAI() {
   try {
-    const messages: OpenAIMessages = [
+    const messages = [
+      {
+        role: "system",
+        content: "you are a helpful assistant",
+      },
       {
         role: "user",
         content: "hi",
@@ -20,8 +20,6 @@ async function testStreamOpenAI() {
       "gpt-4o",
       1000,
       0.7,
-      "You are a helpful assistant",
-      [],
       {
         apiKey: process.env.OPENAI_API_KEY,
       }

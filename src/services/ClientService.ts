@@ -7,8 +7,7 @@ export interface ClientService {
     model?: string,
     maxTokens?: number,
     temperature?: number,
-    systemPrompt?: string,
-    tools?: any
+    systemPrompt?: string
   ): Promise<LLMResponse>;
 
   // For streaming responses
@@ -17,8 +16,6 @@ export interface ClientService {
     model?: string,
     maxTokens?: number,
     temperature?: number,
-    systemPrompt?: string,
-    tools?: any,
-    stream?: boolean
+    systemPrompt?: string
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;
 }
