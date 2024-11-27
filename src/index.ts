@@ -15,6 +15,7 @@ interface Credentials {
 interface GenerateLLMResponseParams {
   messages: Messages;
   model: string;
+  functions: any; // TODO : Fix this any more info in the ClientService.ts
   max_tokens: number;
   temperature: number;
   credentials: Credentials;
@@ -24,7 +25,8 @@ interface GenerateLLMResponseParams {
 export async function generateLLMResponse(
   params: GenerateLLMResponseParams
 ): Promise<OpenAIResponse> {
-  const { messages, model, max_tokens, temperature, credentials } = params;
+  const { messages, model, functions, max_tokens, temperature, credentials } =
+    params;
 
   // Step 1: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
@@ -62,6 +64,7 @@ export async function generateLLMResponse(
     model,
     max_tokens,
     temperature,
+    functions,
     systemPrompt
   );
 
@@ -75,7 +78,8 @@ export async function generateLLMResponse(
 export async function generateLLMStreamResponse(
   params: GenerateLLMResponseParams
 ): Promise<AsyncGenerator<OpenAIResponse>> {
-  const { messages, model, max_tokens, temperature, credentials } = params;
+  const { messages, model, functions, max_tokens, temperature, credentials } =
+    params;
 
   // Step 1: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
@@ -113,6 +117,7 @@ export async function generateLLMStreamResponse(
     model,
     max_tokens,
     temperature,
+    functions,
     systemPrompt
   );
 
