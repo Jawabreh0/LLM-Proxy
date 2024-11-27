@@ -3,13 +3,7 @@ import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
 import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
 import { AwsBedrockAnthropicService } from "./services/AwsBedrockAnthropicService";
 import { OpenAIService } from "./services/OpenAIService";
-import {
-  Messages,
-  OpenAIResponse,
-  Providers,
-  OpenAIMessages,
-  BedrockAnthropicMessages,
-} from "./types";
+import { Messages, OpenAIResponse, Providers } from "./types";
 
 // Define the credentials interface for flexibility
 interface Credentials {
@@ -17,17 +11,22 @@ interface Credentials {
   awsConfig?: { accessKeyId: string; secretAccessKey: string; region: string };
 }
 
+// Define the input parameters interface for flexibility
+interface GenerateLLMResponseParams {
+  messages: Messages;
+  model: string;
+  max_tokens: number;
+  temperature: number;
+  credentials: Credentials;
+}
+
 // Main function for non-streaming requests
 export async function generateLLMResponse(
-  messages: Messages,
-  model: string,
-  maxTokens: number,
-  temperature: number,
-  systemPrompt: string,
-  tools: any,
-  credentials: Credentials
+  params: GenerateLLMResponseParams
 ): Promise<OpenAIResponse> {
-  // Step 2: Identify the provider based on the model
+  const { messages, model, max_tokens, temperature, credentials } = params;
+
+  // Step 1: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
 
   // Initialize the correct service based on the provider
@@ -51,24 +50,22 @@ export async function generateLLMResponse(
     throw new Error("Unsupported provider");
   }
 
-  // Step 3: If the provider is not OpenAI, adapt the input to provider format
-  const adaptedMessages =
-    provider !== Providers.OPENAI
-      ? InputFormatAdapter.adaptMessages(messages, provider)
-      : messages;
-
-  const response = await service.generateCompletion(
-    provider === Providers.OPENAI
-      ? (messages as OpenAIMessages)
-      : (adaptedMessages as BedrockAnthropicMessages as any),
-    model,
-    maxTokens,
-    temperature,
-    systemPrompt,
-    tools
+  // Step 2: Adapt messages and extract the system prompt
+  const { adaptedMessages, systemPrompt } = InputFormatAdapter.adaptMessages(
+    messages,
+    provider
   );
 
-  // Adapt the response if provider is not OpenAI
+  // Step 3: Generate the completion
+  const response = await service.generateCompletion(
+    adaptedMessages as any, // TODO: fix this any
+    model,
+    max_tokens,
+    temperature,
+    systemPrompt
+  );
+
+  // Step 4: Adapt the response if needed
   return provider === Providers.OPENAI
     ? (response as OpenAIResponse)
     : (OutputFormatAdapter.adaptResponse(response, provider) as OpenAIResponse);
@@ -76,16 +73,14 @@ export async function generateLLMResponse(
 
 // Main function for streaming requests
 export async function generateLLMStreamResponse(
-  messages: Messages,
-  model: string,
-  maxTokens: number,
-  temperature: number,
-  systemPrompt: string,
-  tools: any,
-  credentials: Credentials
+  params: GenerateLLMResponseParams
 ): Promise<AsyncGenerator<OpenAIResponse>> {
+  const { messages, model, max_tokens, temperature, credentials } = params;
+
+  // Step 1: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
 
+  // Initialize the correct service based on the provider
   let service: OpenAIService | AwsBedrockAnthropicService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
@@ -106,24 +101,22 @@ export async function generateLLMStreamResponse(
     throw new Error("Unsupported provider");
   }
 
-  const adaptedMessages =
-    provider !== Providers.OPENAI
-      ? InputFormatAdapter.adaptMessages(messages, provider)
-      : messages;
-
-  const stream = service.generateStreamCompletion(
-    provider === Providers.OPENAI
-      ? (messages as OpenAIMessages)
-      : (adaptedMessages as BedrockAnthropicMessages as any),
-    model,
-    maxTokens,
-    temperature,
-    systemPrompt,
-    tools,
-    true
+  // Step 2: Adapt messages and extract the system prompt
+  const { adaptedMessages, systemPrompt } = InputFormatAdapter.adaptMessages(
+    messages,
+    provider
   );
 
-  // Create and return the async generator
+  // Step 3: Generate the streaming completion
+  const stream = service.generateStreamCompletion(
+    adaptedMessages as any, // TODO: Fix this any
+    model,
+    max_tokens,
+    temperature,
+    systemPrompt
+  );
+
+  // Step 4: Create and return the async generator
   async function* streamGenerator(): AsyncGenerator<OpenAIResponse> {
     for await (const chunk of stream) {
       yield provider === Providers.OPENAI

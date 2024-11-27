@@ -26,10 +26,9 @@ export class AwsBedrockAnthropicService implements ClientService {
   async generateCompletion(
     messages: Messages,
     model?: string,
-    maxTokens?: number,
+    max_tokens?: number,
     temperature?: number,
-    systemPrompt?: string,
-    tools?: any
+    systemPrompt?: string
   ): Promise<BedrockAnthropicResponse> {
     if (!model) {
       throw new Error("Model ID is required for AwsBedrockAnthropicService");
@@ -37,11 +36,10 @@ export class AwsBedrockAnthropicService implements ClientService {
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
-      max_tokens: maxTokens,
+      max_tokens,
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools && tools.length > 0 ? { tools } : {}),
     });
 
     const command = new InvokeModelCommand({
@@ -58,11 +56,9 @@ export class AwsBedrockAnthropicService implements ClientService {
   async *generateStreamCompletion(
     messages: Messages,
     model?: string,
-    maxTokens?: number,
+    max_tokens?: number,
     temperature?: number,
-    systemPrompt?: string,
-    tools?: any,
-    stream?: boolean
+    systemPrompt?: string
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
     if (!model) {
       throw new Error("Model ID is required for AwsBedrockAnthropicService");
@@ -70,11 +66,10 @@ export class AwsBedrockAnthropicService implements ClientService {
 
     const body = JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
-      max_tokens: maxTokens,
+      max_tokens,
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools && tools.length > 0 ? { tools } : {}),
     });
 
     const command = new InvokeModelWithResponseStreamCommand({

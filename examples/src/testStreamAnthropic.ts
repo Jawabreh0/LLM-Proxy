@@ -1,9 +1,4 @@
-import {
-  BedrockAnthropicSupportedLLMs,
-  generateLLMStreamResponse,
-  OpenAIMessages,
-  OpenAIMessagesRoles,
-} from "llm-proxy/dist";
+import { generateLLMStreamResponse, OpenAIMessages } from "llm-proxy/dist";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -22,27 +17,32 @@ async function testStreamAnthropic() {
 
     const messages: OpenAIMessages = [
       {
+        role: "system",
+        content: "you are a helpful assistant",
+      },
+      {
         role: "user",
-        content: "Hi i am Ahmad",
+        content: "tell me short a story",
       },
     ];
 
-    const stream = await generateLLMStreamResponse(
-      messages,
-      "anthropic.claude-3-haiku-20240307-v1:0",
-      1000,
-      0.7,
-      "You are a helpful assistant",
-      [],
-      {
+    // The updated function call now uses an object format for parameters
+    const stream = await generateLLMStreamResponse({
+      messages: messages,
+      model: "anthropic.claude-3-haiku-20240307-v1:0",
+      max_tokens: 1000,
+      temperature: 0.7,
+      credentials: {
         apiKey: process.env.OPENAI_API_KEY,
         awsConfig: {
           accessKeyId,
           secretAccessKey,
           region,
         },
-      }
-    );
+      },
+    });
+
+    // Handle the stream and output the response in chunks
     for await (const chunk of stream) {
       if (!chunk) continue; // Skip null chunks
       const deltaContent = (chunk.choices[0] as any)?.delta?.content;

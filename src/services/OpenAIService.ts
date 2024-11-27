@@ -12,10 +12,9 @@ export class OpenAIService implements ClientService {
   async generateCompletion(
     messages: OpenAIMessages,
     model: string,
-    maxTokens: number,
+    max_tokens: number,
     temperature: number,
-    systemPrompt?: string, // Optional parameter -- in openai there is no system prompt parameter
-    tools?: any // Optional parameter -- tools are part of the system prompt or the message are being managed on the client side
+    systemPrompt?: string
   ): Promise<OpenAIResponse> {
     if (!model) {
       throw new Error("Model ID is required for OpenAIService.");
@@ -25,7 +24,7 @@ export class OpenAIService implements ClientService {
       const response = await this.openai.chat.completions.create({
         model, // Use the string directly
         messages,
-        max_tokens: maxTokens,
+        max_tokens,
         temperature,
       });
       return response as OpenAIResponse;
@@ -38,11 +37,9 @@ export class OpenAIService implements ClientService {
   async *generateStreamCompletion(
     messages: OpenAIMessages,
     model: string,
-    maxTokens: number,
+    max_tokens: number,
     temperature: number,
-    systemPrompt?: string, // Optional parameter
-    tools?: any, // Optional parameter
-    stream?: boolean // Optional parameter
+    systemPrompt?: string
   ): AsyncGenerator<any, void, unknown> {
     if (!model) {
       throw new Error("Model ID is required for OpenAIService.");
@@ -52,7 +49,7 @@ export class OpenAIService implements ClientService {
       const stream = await this.openai.chat.completions.create({
         model,
         messages,
-        max_tokens: maxTokens,
+        max_tokens,
         temperature,
         stream: true,
         stream_options: {

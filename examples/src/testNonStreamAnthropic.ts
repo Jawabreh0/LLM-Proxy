@@ -1,10 +1,4 @@
-import {
-  BedrockAnthropicMessageRole,
-  BedrockAnthropicSupportedLLMs,
-  generateLLMResponse,
-  OpenAIMessages,
-  OpenAIMessagesRoles,
-} from "llm-proxy/dist";
+import { generateLLMResponse, OpenAIMessages } from "llm-proxy/dist";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -24,6 +18,10 @@ async function testNonStreamAnthropic() {
 
     const messages: OpenAIMessages = [
       {
+        role: "system",
+        content: "you are a helpful assistant",
+      },
+      {
         role: "user",
         content: "tell me short a story",
       },
@@ -39,15 +37,14 @@ async function testNonStreamAnthropic() {
       },
     };
 
-    const response = await generateLLMResponse(
-      messages,
-      "anthropic.claude-3-haiku-20240307-v1:0",
-      1000,
-      0.7,
-      "You are a helpful assistant",
-      [],
-      credentials
-    );
+    // Updated function call now uses an object format for parameters
+    const response = await generateLLMResponse({
+      messages: messages,
+      model: "anthropic.claude-3-haiku-20240307-v1:0",
+      max_tokens: 1000,
+      temperature: 0.7,
+      credentials: credentials,
+    });
 
     console.log("Assistant Response:", response.choices[0].message.content);
     console.log("Usage:");
@@ -59,7 +56,7 @@ async function testNonStreamAnthropic() {
         name: error.name,
         message: error.message,
         stack: error.stack,
-        credintials: {
+        credentials: {
           accessKeyId: process.env.AWS_ACCESS_KEY_ID,
           secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
           region: process.env.AWS_REGION,
