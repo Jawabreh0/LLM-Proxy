@@ -31,6 +31,18 @@ export interface OpenAIStreamResponse {
   };
   logprobs: string | null;
   finish_reason: string | null;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    prompt_tokens_details: { cached_tokens: number; audio_tokens: number };
+    completion_tokens_details: {
+      reasoning_tokens: number;
+      audio_tokens: number;
+      accepted_prediction_tokens: number;
+      rejected_prediction_tokens: number;
+    };
+  };
 }
 
 export type OpenAISystemMessage = {
