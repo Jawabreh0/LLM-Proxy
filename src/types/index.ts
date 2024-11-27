@@ -14,6 +14,22 @@ export enum OpenAIMessagesRoles {
   FUNCTION = "function",
 }
 
+export interface OpenAIStreamResponse {
+  id: string; // some string id for the message
+  object: string; // chat.completion.chunk
+  created: number; // 1732633291
+  model: string; // "gpt-4o-2024-08-06"
+  system_fingerprint: string; // "fp_7f6be3efb0";
+  choices: {
+    index: number;
+    delta: {
+      content?: string;
+    };
+    logprobs: string | null;
+    finish_reason: string | null;
+  };
+}
+
 export type OpenAISystemMessage = {
   role: OpenAIMessagesRoles.SYSTEM;
   content: string;
@@ -226,23 +242,3 @@ export type BedrockAnthropicParsedChunk = {
 // GENERAL
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
 export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
-
-export type SupportedLLMs =
-  | { type: "OpenAI"; model: OpenAISupportedLLMs }
-  | { type: "BedrockAnthropic"; model: BedrockAnthropicSupportedLLMs };
-
-export interface OpenAIStreamResponse {
-  id: string; // some string id for the message
-  object: string; // chat.completion.chunk
-  created: number; // 1732633291
-  model: string; // "gpt-4o-2024-08-06"
-  system_fingerprint: string; // "fp_7f6be3efb0";
-  choices: {
-    index: number;
-    delta: {
-      content?: string;
-    };
-    logprobs: string | null;
-    finish_reason: string | null;
-  };
-}

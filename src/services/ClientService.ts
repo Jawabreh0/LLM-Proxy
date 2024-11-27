@@ -1,9 +1,4 @@
-import {
-  BedrockAnthropicParsedChunk,
-  LLMResponse,
-  Messages,
-  SupportedLLMs,
-} from "../types";
+import { BedrockAnthropicParsedChunk, LLMResponse, Messages } from "../types";
 
 // for non streaming responses
 export interface ClientService {
