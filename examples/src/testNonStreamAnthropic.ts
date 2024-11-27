@@ -1,4 +1,4 @@
-import { generateLLMResponse } from "llm-proxy/dist";
+import { generateLLMResponse, OpenAIMessages } from "llm-proxy/dist";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,7 +16,11 @@ async function testNonStreamAnthropic() {
       );
     }
 
-    const messages = [
+    const messages: OpenAIMessages = [
+      {
+        role: "system",
+        content: "you are a helpful assistant",
+      },
       {
         role: "user",
         content: "tell me short a story",
@@ -38,8 +42,6 @@ async function testNonStreamAnthropic() {
       "anthropic.claude-3-haiku-20240307-v1:0",
       1000,
       0.7,
-      "You are a helpful assistant",
-      [],
       credentials
     );
 

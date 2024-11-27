@@ -3,13 +3,7 @@ import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
 import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
 import { AwsBedrockAnthropicService } from "./services/AwsBedrockAnthropicService";
 import { OpenAIService } from "./services/OpenAIService";
-import {
-  Messages,
-  OpenAIResponse,
-  Providers,
-  OpenAIMessages,
-  BedrockAnthropicMessages,
-} from "./types";
+import { Messages, OpenAIResponse, Providers } from "./types";
 
 // Define the credentials interface for flexibility
 interface Credentials {

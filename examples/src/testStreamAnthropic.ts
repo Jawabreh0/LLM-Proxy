@@ -1,4 +1,4 @@
-import { generateLLMStreamResponse } from "llm-proxy/dist";
+import { generateLLMStreamResponse, OpenAIMessages } from "llm-proxy/dist";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -15,20 +15,21 @@ async function testStreamAnthropic() {
       );
     }
 
-    const messages = [
+    const messages: OpenAIMessages = [
+      {
+        role: "system",
+        content: "you are a helpful assistant",
+      },
       {
         role: "user",
-        content: "Hi i am Ahmad",
+        content: "tell me short a story",
       },
     ];
-
     const stream = await generateLLMStreamResponse(
       messages,
       "anthropic.claude-3-haiku-20240307-v1:0",
       1000,
       0.7,
-      "You are a helpful assistant",
-      [],
       {
         apiKey: process.env.OPENAI_API_KEY,
         awsConfig: {

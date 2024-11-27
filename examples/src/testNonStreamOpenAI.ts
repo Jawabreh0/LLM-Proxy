@@ -1,4 +1,4 @@
-import { generateLLMResponse } from "llm-proxy/dist";
+import { generateLLMResponse, OpenAIMessages } from "llm-proxy/dist";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -7,7 +7,11 @@ async function testNonStreamOpenAI() {
   console.log("Starting non-streaming test...");
 
   try {
-    const messages = [
+    const messages: OpenAIMessages = [
+      {
+        role: "system",
+        content: "you are a helpful assistant",
+      },
       {
         role: "user",
         content: "tell me short a story",
@@ -19,8 +23,7 @@ async function testNonStreamOpenAI() {
       "gpt-4o",
       1000,
       0.7,
-      "You are a helpful assistant",
-      [],
+
       {
         apiKey: process.env.OPENAI_API_KEY,
         awsConfig: {
