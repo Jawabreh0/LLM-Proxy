@@ -5,7 +5,7 @@ export interface ClientService {
   generateCompletion(
     messages: Messages,
     model?: string,
-    maxTokens?: number,
+    max_tokens?: number,
     temperature?: number,
     systemPrompt?: string
   ): Promise<LLMResponse>;
@@ -14,7 +14,7 @@ export interface ClientService {
   generateStreamCompletion(
     messages: Messages,
     model?: string,
-    maxTokens?: number,
+    max_tokens?: number,
     temperature?: number,
     systemPrompt?: string
   ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;

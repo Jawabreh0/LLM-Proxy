@@ -11,14 +11,21 @@ interface Credentials {
   awsConfig?: { accessKeyId: string; secretAccessKey: string; region: string };
 }
 
+// Define the input parameters interface for flexibility
+interface GenerateLLMResponseParams {
+  messages: Messages;
+  model: string;
+  max_tokens: number;
+  temperature: number;
+  credentials: Credentials;
+}
+
 // Main function for non-streaming requests
 export async function generateLLMResponse(
-  messages: Messages,
-  model: string,
-  maxTokens: number,
-  temperature: number,
-  credentials: Credentials
+  params: GenerateLLMResponseParams
 ): Promise<OpenAIResponse> {
+  const { messages, model, max_tokens, temperature, credentials } = params;
+
   // Step 1: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
 
@@ -53,7 +60,7 @@ export async function generateLLMResponse(
   const response = await service.generateCompletion(
     adaptedMessages as any, // TODO: fix this any
     model,
-    maxTokens,
+    max_tokens,
     temperature,
     systemPrompt
   );
@@ -66,12 +73,11 @@ export async function generateLLMResponse(
 
 // Main function for streaming requests
 export async function generateLLMStreamResponse(
-  messages: Messages,
-  model: string,
-  maxTokens: number,
-  temperature: number,
-  credentials: Credentials
+  params: GenerateLLMResponseParams
 ): Promise<AsyncGenerator<OpenAIResponse>> {
+  const { messages, model, max_tokens, temperature, credentials } = params;
+
+  // Step 1: Identify the provider based on the model
   const provider = ProviderFinder.getProvider(model);
 
   // Initialize the correct service based on the provider
@@ -95,22 +101,22 @@ export async function generateLLMStreamResponse(
     throw new Error("Unsupported provider");
   }
 
-  // Adapt messages and extract the system prompt
+  // Step 2: Adapt messages and extract the system prompt
   const { adaptedMessages, systemPrompt } = InputFormatAdapter.adaptMessages(
     messages,
     provider
   );
 
-  // Generate the streaming completion
+  // Step 3: Generate the streaming completion
   const stream = service.generateStreamCompletion(
     adaptedMessages as any, // TODO: Fix this any
     model,
-    maxTokens,
+    max_tokens,
     temperature,
     systemPrompt
   );
 
-  // Create and return the async generator
+  // Step 4: Create and return the async generator
   async function* streamGenerator(): AsyncGenerator<OpenAIResponse> {
     for await (const chunk of stream) {
       yield provider === Providers.OPENAI

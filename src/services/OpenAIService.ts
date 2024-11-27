@@ -12,7 +12,7 @@ export class OpenAIService implements ClientService {
   async generateCompletion(
     messages: OpenAIMessages,
     model: string,
-    maxTokens: number,
+    max_tokens: number,
     temperature: number,
     systemPrompt?: string
   ): Promise<OpenAIResponse> {
@@ -24,7 +24,7 @@ export class OpenAIService implements ClientService {
       const response = await this.openai.chat.completions.create({
         model, // Use the string directly
         messages,
-        max_tokens: maxTokens,
+        max_tokens,
         temperature,
       });
       return response as OpenAIResponse;
@@ -37,7 +37,7 @@ export class OpenAIService implements ClientService {
   async *generateStreamCompletion(
     messages: OpenAIMessages,
     model: string,
-    maxTokens: number,
+    max_tokens: number,
     temperature: number,
     systemPrompt?: string
   ): AsyncGenerator<any, void, unknown> {
@@ -49,7 +49,7 @@ export class OpenAIService implements ClientService {
       const stream = await this.openai.chat.completions.create({
         model,
         messages,
-        max_tokens: maxTokens,
+        max_tokens,
         temperature,
         stream: true,
         stream_options: {

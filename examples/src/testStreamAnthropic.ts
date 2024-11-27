@@ -25,20 +25,24 @@ async function testStreamAnthropic() {
         content: "tell me short a story",
       },
     ];
-    const stream = await generateLLMStreamResponse(
-      messages,
-      "anthropic.claude-3-haiku-20240307-v1:0",
-      1000,
-      0.7,
-      {
+
+    // The updated function call now uses an object format for parameters
+    const stream = await generateLLMStreamResponse({
+      messages: messages,
+      model: "anthropic.claude-3-haiku-20240307-v1:0",
+      max_tokens: 1000,
+      temperature: 0.7,
+      credentials: {
         apiKey: process.env.OPENAI_API_KEY,
         awsConfig: {
           accessKeyId,
           secretAccessKey,
           region,
         },
-      }
-    );
+      },
+    });
+
+    // Handle the stream and output the response in chunks
     for await (const chunk of stream) {
       if (!chunk) continue; // Skip null chunks
       const deltaContent = (chunk.choices[0] as any)?.delta?.content;
