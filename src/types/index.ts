@@ -22,10 +22,15 @@ export interface OpenAIStreamResponse {
     index: number;
     delta: {
       content?: string;
+      function_calls?: {
+        id?: string;
+        name?: string;
+        arguments?: string;
+      };
     };
-    logprobs: string | null;
-    finish_reason: string | null;
   };
+  logprobs: string | null;
+  finish_reason: string | null;
 }
 
 export type OpenAISystemMessage = {
