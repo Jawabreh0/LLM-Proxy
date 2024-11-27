@@ -1,9 +1,9 @@
 import { ProviderFinder } from "./middleware/ProviderFinder";
 import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
 import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
-import { AwsBedrockAnthropicService } from "./services/AwsBedrockAnthropicService";
-import { OpenAIService } from "./services/OpenAIService";
 import { Messages, OpenAIResponse, Providers } from "./types";
+import OpenAIService from "./services/OpenAIService";
+import AwsBedrockAnthropicService from "./services/AwsBedrockAnthropicService";
 
 // Define the credentials interface for flexibility
 interface Credentials {
@@ -57,13 +57,13 @@ export async function generateLLMResponse(
   );
 
   // Step 3: Generate the completion
-  const response = await service.generateCompletion(
-    adaptedMessages as any, // TODO: fix this any
+  const response = await service.generateCompletion({
+    messages: adaptedMessages as any, // TODO: fix this any
     model,
     max_tokens,
     temperature,
-    systemPrompt
-  );
+    systemPrompt,
+  });
 
   // Step 4: Adapt the response if needed
   return provider === Providers.OPENAI
@@ -108,13 +108,13 @@ export async function generateLLMStreamResponse(
   );
 
   // Step 3: Generate the streaming completion
-  const stream = service.generateStreamCompletion(
-    adaptedMessages as any, // TODO: Fix this any
+  const stream = service.generateStreamCompletion({
+    messages: adaptedMessages as any, // TODO: Fix this any
     model,
     max_tokens,
     temperature,
-    systemPrompt
-  );
+    systemPrompt,
+  });
 
   // Step 4: Create and return the async generator
   async function* streamGenerator(): AsyncGenerator<OpenAIResponse> {
