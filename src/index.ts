@@ -33,13 +33,13 @@ export async function generateLLMResponse(
   let service: OpenAIService | AwsBedrockAnthropicService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
-      throw new Error("OpenAI API key is required for OpenAI models.");
+      return Promise.reject("OpenAI API key is required for OpenAI models.");
     }
     service = new OpenAIService(credentials.apiKey);
   } else if (provider === Providers.ANTHROPIC_BEDROCK) {
     const awsConfig = credentials.awsConfig;
     if (!awsConfig) {
-      throw new Error("AWS credentials are required for Bedrock models.");
+      return Promise.reject("AWS credentials are required for Bedrock models.");
     }
     service = new AwsBedrockAnthropicService(
       awsConfig.accessKeyId,
@@ -47,7 +47,7 @@ export async function generateLLMResponse(
       awsConfig.region
     );
   } else {
-    throw new Error("Unsupported provider");
+    return Promise.reject("Unsupported provider");
   }
 
   // Step 2: Adapt messages and extract the system prompt
@@ -84,13 +84,13 @@ export async function generateLLMStreamResponse(
   let service: OpenAIService | AwsBedrockAnthropicService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
-      throw new Error("OpenAI API key is required for OpenAI models.");
+      return Promise.reject("OpenAI API key is required for OpenAI models.");
     }
     service = new OpenAIService(credentials.apiKey);
   } else if (provider === Providers.ANTHROPIC_BEDROCK) {
     const awsConfig = credentials.awsConfig;
     if (!awsConfig) {
-      throw new Error("AWS credentials are required for Bedrock models.");
+      return Promise.reject("AWS credentials are required for Bedrock models.");
     }
     service = new AwsBedrockAnthropicService(
       awsConfig.accessKeyId,
@@ -98,7 +98,7 @@ export async function generateLLMStreamResponse(
       awsConfig.region
     );
   } else {
-    throw new Error("Unsupported provider");
+    return Promise.reject("Unsupported provider");
   }
 
   // Step 2: Adapt messages and extract the system prompt
