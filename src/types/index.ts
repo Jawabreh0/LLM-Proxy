@@ -22,7 +22,7 @@ export interface OpenAIStreamResponse {
     index: number;
     delta: {
       content?: string;
-      function_calls?: {
+      function_call?: {
         id?: string;
         name?: string;
         arguments?: string;
@@ -31,6 +31,18 @@ export interface OpenAIStreamResponse {
   };
   logprobs: string | null;
   finish_reason: string | null;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    prompt_tokens_details: { cached_tokens: number; audio_tokens: number };
+    completion_tokens_details: {
+      reasoning_tokens: number;
+      audio_tokens: number;
+      accepted_prediction_tokens: number;
+      rejected_prediction_tokens: number;
+    };
+  };
 }
 
 export type OpenAISystemMessage = {
@@ -103,6 +115,10 @@ export interface OpenAIResponse {
     message: {
       role: string;
       content: string;
+      function_call?: {
+        name: string;
+        arguments: any; // TODO: i guess this is supposed to be string
+      };
     };
     logprobs: null | object;
     finish_reason: string;
@@ -111,8 +127,8 @@ export interface OpenAIResponse {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;
-    prompt_tokens_details: { cached_tokens: number };
-    completion_tokens_details: { reasoning_tokens: number };
+    prompt_tokens_details?: { cached_tokens: number };
+    completion_tokens_details?: { reasoning_tokens: number };
   };
   system_fingerprint: string;
 }
