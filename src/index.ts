@@ -15,9 +15,9 @@ interface Credentials {
 interface GenerateLLMResponseParams {
   messages: Messages;
   model: string;
-  functions: any; // TODO : Fix this any more info in the ClientService.ts
+  functions?: any; // TODO : Fix this any more info in the ClientService.ts
   max_tokens: number;
-  temperature: number;
+  temperature?: number;
   credentials: Credentials;
 }
 
@@ -62,12 +62,11 @@ export async function generateLLMResponse(
   const response = await service.generateCompletion({
     messages: adaptedMessages as any, // TODO: fix this any
     model,
-    max_tokens,
-    temperature,
+    max_tokens: max_tokens,
+    temperature: temperature || 0,
     functions,
-    systemPrompt
-    }
-  );
+    systemPrompt,
+  });
 
   // Step 4: Adapt the response if needed
   return provider === Providers.OPENAI
@@ -117,10 +116,10 @@ export async function generateLLMStreamResponse(
     messages: adaptedMessages as any, // TODO: Fix this any
     model,
     max_tokens,
-    temperature,
-    systemPrompt
-  }
-  );
+    temperature: temperature || 0,
+    functions,
+    systemPrompt,
+  });
 
   // Step 4: Create and return the async generator
   async function* streamGenerator(): AsyncGenerator<OpenAIResponse> {
