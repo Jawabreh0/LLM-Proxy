@@ -15,6 +15,15 @@ export class InputFormatAdapter {
     adaptedMessages: OpenAIMessages | BedrockAnthropicMessage[];
     systemPrompt?: string;
   } {
+    //
+    /**!SECTION
+     * There some strange stuff happened, in a function call assistant message the
+     * will be by default null, it must be null, but the openai api was returning error
+     * and it cannot be null of fine, but using same api version, from different app (CMND)
+     *  it works well !!!!!!!! it works with null content on the same version,
+     *  im not convinced with this work to make it empty string instead of null so here is a todo to go back to it
+     */
+
     switch (provider) {
       case Providers.OPENAI:
         return {
@@ -22,13 +31,13 @@ export class InputFormatAdapter {
             if (msg.role === "function") {
               return {
                 role: msg.role,
-                content: msg.content,
+                content: msg.content ?? "",
                 name: (msg as OpenAIFunctionMessage).name,
               };
             }
             return {
               role: msg.role,
-              content: msg.content as string,
+              content: msg.content ?? "",
             };
           }) as OpenAIMessages,
         };
@@ -47,14 +56,14 @@ export class InputFormatAdapter {
           );
         }
 
-        const systemPrompt = firstMessage.content as string;
+        const systemPrompt = firstMessage.content ?? "";
 
         const adaptedMessages = restMessages.map((msg) => ({
           role: msg.role === "user" ? "user" : "assistant",
           content: [
             {
               type: BedrockAnthropicContentType.TEXT,
-              text: msg.content as string,
+              text: msg.content ?? "",
             },
           ],
         })) as BedrockAnthropicMessage[];
