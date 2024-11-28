@@ -1,8 +1,8 @@
 import { ProviderFinder } from "./middleware/ProviderFinder";
 import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
-import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
 import { Messages, OpenAIResponse, Providers } from "./types";
 import OpenAIService from "./services/OpenAIService";
+import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
 import AwsBedrockAnthropicService from "./services/AwsBedrockAnthropicService";
 
 // Define the credentials interface for flexibility
@@ -62,7 +62,7 @@ export async function generateLLMResponse(
   const response = await service.generateCompletion({
     messages: adaptedMessages as any, // TODO: fix this any
     model,
-    max_tokens: max_tokens,
+    max_tokens,
     temperature: temperature || 0,
     functions,
     systemPrompt,
