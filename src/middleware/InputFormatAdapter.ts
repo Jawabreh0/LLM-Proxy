@@ -7,7 +7,7 @@ import {
   Providers,
 } from "../types";
 
-export class InputFormatAdapter {
+export default class InputFormatAdapter {
   static adaptMessages(
     messages: Messages,
     provider: Providers
@@ -15,15 +15,6 @@ export class InputFormatAdapter {
     adaptedMessages: OpenAIMessages | BedrockAnthropicMessage[];
     systemPrompt?: string;
   } {
-    //
-    /**!SECTION
-     * There some strange stuff happened, in a function call assistant message the
-     * will be by default null, it must be null, but the openai api was returning error
-     * and it cannot be null of fine, but using same api version, from different app (CMND)
-     *  it works well !!!!!!!! it works with null content on the same version,
-     *  im not convinced with this work to make it empty string instead of null so here is a todo to go back to it
-     */
-
     switch (provider) {
       case Providers.OPENAI:
         return {
