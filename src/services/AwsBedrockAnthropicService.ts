@@ -1,16 +1,16 @@
 import {
-  BedrockAnthropicParsedChunk,
-  BedrockAnthropicResponse,
-  Messages,
-} from "../types";
-import {
   InvokeModelCommand,
   BedrockRuntimeClient,
   InvokeModelWithResponseStreamCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+import {
+  BedrockAnthropicParsedChunk,
+  BedrockAnthropicResponse,
+  Messages,
+} from "../types";
 import { ClientService } from "./ClientService";
 
-export class AwsBedrockAnthropicService implements ClientService {
+export default class AwsBedrockAnthropicService implements ClientService {
   private bedrock: BedrockRuntimeClient;
 
   constructor(awsAccessKey: string, awsSecretKey: string, region: string) {
@@ -23,15 +23,19 @@ export class AwsBedrockAnthropicService implements ClientService {
     });
   }
 
-  async generateCompletion(
-    messages: Messages,
-    model?: string,
-    max_tokens?: number,
-    temperature?: number,
-    systemPrompt?: string
-  ): Promise<BedrockAnthropicResponse> {
+  async generateCompletion(params: {
+    messages: Messages;
+    model: string;
+    max_tokens?: number;
+    temperature?: number;
+    systemPrompt?: string;
+  }): Promise<BedrockAnthropicResponse> {
+    const { messages, model, max_tokens, temperature, systemPrompt } = params;
+
     if (!model) {
-      throw new Error("Model ID is required for AwsBedrockAnthropicService");
+      return Promise.reject(
+        "Model ID is required for AwsBedrockAnthropicService"
+      );
     }
 
     const body = JSON.stringify({
@@ -53,15 +57,19 @@ export class AwsBedrockAnthropicService implements ClientService {
     return JSON.parse(new TextDecoder().decode(response.body));
   }
 
-  async *generateStreamCompletion(
-    messages: Messages,
-    model?: string,
-    max_tokens?: number,
-    temperature?: number,
-    systemPrompt?: string
-  ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
+  async *generateStreamCompletion(params: {
+    messages: Messages;
+    model: string;
+    max_tokens?: number;
+    temperature?: number;
+    systemPrompt?: string;
+  }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
+    const { messages, model, max_tokens, temperature, systemPrompt } = params;
+
     if (!model) {
-      throw new Error("Model ID is required for AwsBedrockAnthropicService");
+      return Promise.reject(
+        "Model ID is required for AwsBedrockAnthropicService"
+      );
     }
 
     const body = JSON.stringify({
@@ -93,7 +101,7 @@ export class AwsBedrockAnthropicService implements ClientService {
           const jsonObject = JSON.parse(decodedString);
           yield jsonObject;
         } catch (error) {
-          console.error("Failed to parse chunk as JSON:", error);
+          return Promise.reject(error);
         }
       }
     }

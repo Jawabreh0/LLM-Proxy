@@ -1,25 +1,37 @@
 import { BedrockAnthropicParsedChunk, LLMResponse, Messages } from "../types";
 
-// for non streaming responses
 export interface ClientService {
-  generateCompletion(
-    messages: Messages,
-    model?: string,
-    max_tokens?: number,
-    temperature?: number,
-    functions?: any, // todo: sort out the type
-    systemPrompt?: string
-  ): Promise<LLMResponse>;
+  generateCompletion({
+    messages,
+    model,
+    max_tokens,
+    temperature,
+    functions,
+    systemPrompt,
+  }: {
+    messages: Messages;
+    model?: string;
+    max_tokens?: number;
+    temperature?: number;
+    functions?: any; // TODO: Define the correct type
+    systemPrompt?: string;
+  }): Promise<LLMResponse>;
 
-  // For streaming responses
-  generateStreamCompletion(
-    messages: Messages,
-    model?: string,
-    max_tokens?: number,
-    temperature?: number,
-    functions?: any, // todo: sort out the type it might be like this i guess(down)
-    systemPrompt?: string
-  ): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;
+  generateStreamCompletion({
+    messages,
+    model,
+    max_tokens,
+    temperature,
+    functions,
+    systemPrompt,
+  }: {
+    messages: Messages;
+    model?: string;
+    max_tokens?: number;
+    temperature?: number;
+    functions?: any; // TODO: Define the correct type it might be looking like below
+    systemPrompt?: string;
+  }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;
 }
 
 //  functions: [
