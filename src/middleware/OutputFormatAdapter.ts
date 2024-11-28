@@ -41,7 +41,7 @@ export class OutputFormatAdapter {
       object: "text_completion",
       created: Date.now(),
       model,
-      choices: response.content.map((contentBlock, index) => ({
+      choices: response.content.map((contentBlock: BedrockAnthropicContent, index: any) => ({
         index,
         message: {
           role: this.mapRole(contentBlock),
