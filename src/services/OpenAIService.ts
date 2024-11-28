@@ -14,17 +14,20 @@ export default class OpenAIService implements ClientService {
     model,
     max_tokens,
     temperature,
-    tools,
+    tools
   }: {
     messages: OpenAIMessages;
     model: string;
     max_tokens: number;
     temperature: number;
     systemPrompt?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tools?: any;
   }): Promise<OpenAIResponse> {
     if (!model) {
-      return Promise.reject("Model ID is required for OpenAIService.");
+      return Promise.reject(
+        new Error("Model ID is required for OpenAIService.")
+      );
     }
 
     try {
@@ -33,7 +36,7 @@ export default class OpenAIService implements ClientService {
         messages,
         max_tokens,
         temperature,
-        functions: tools,
+        functions: tools
       });
       return response as OpenAIResponse;
     } catch (error) {
@@ -41,22 +44,27 @@ export default class OpenAIService implements ClientService {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   async *generateStreamCompletion({
     messages,
     model,
     max_tokens,
     temperature,
-    tools,
+    tools
   }: {
     messages: OpenAIMessages;
     model: string;
     max_tokens: number;
     temperature: number;
     systemPrompt?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tools?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): AsyncGenerator<any, void, unknown> {
     if (!model) {
-      return Promise.reject("Model ID is required for OpenAIService.");
+      return Promise.reject(
+        new Error("Model ID is required for OpenAIService.")
+      );
     }
 
     try {
@@ -68,8 +76,8 @@ export default class OpenAIService implements ClientService {
         functions: tools,
         stream: true,
         stream_options: {
-          include_usage: true,
-        },
+          include_usage: true
+        }
       });
 
       for await (const chunk of stream) {

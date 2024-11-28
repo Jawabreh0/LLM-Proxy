@@ -1,12 +1,12 @@
 import {
   InvokeModelCommand,
   BedrockRuntimeClient,
-  InvokeModelWithResponseStreamCommand,
+  InvokeModelWithResponseStreamCommand
 } from "@aws-sdk/client-bedrock-runtime";
 import {
   BedrockAnthropicParsedChunk,
   BedrockAnthropicResponse,
-  Messages,
+  Messages
 } from "../types";
 import { ClientService } from "./ClientService";
 
@@ -18,8 +18,8 @@ export default class AwsBedrockAnthropicService implements ClientService {
       region,
       credentials: {
         accessKeyId: awsAccessKey,
-        secretAccessKey: awsSecretKey,
-      },
+        secretAccessKey: awsSecretKey
+      }
     });
   }
 
@@ -28,15 +28,22 @@ export default class AwsBedrockAnthropicService implements ClientService {
     model?: string;
     max_tokens?: number;
     temperature?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): Promise<BedrockAnthropicResponse> {
-    const { messages, model, max_tokens, temperature, systemPrompt, tools } =
-      params;
+    const {
+      messages,
+      model,
+      max_tokens,
+      temperature,
+      systemPrompt,
+      tools
+    } = params;
 
     if (!model) {
       return Promise.reject(
-        "Model ID is required for AwsBedrockAnthropicService"
+        new Error("Model ID is required for AwsBedrockAnthropicService")
       );
     }
 
@@ -46,34 +53,42 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools.length ? { tools } : {}),
+      ...(tools.length ? { tools } : {})
     });
 
     const command = new InvokeModelCommand({
       modelId: model,
       body,
       contentType: "application/json",
-      accept: "application/json",
+      accept: "application/json"
     });
 
     const response = await this.bedrock.send(command);
     return JSON.parse(new TextDecoder().decode(response.body));
   }
 
+  // eslint-disable-next-line consistent-return
   async *generateStreamCompletion(params: {
     messages: Messages;
     model?: string;
     max_tokens?: number;
     temperature?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    const { messages, model, max_tokens, temperature, tools, systemPrompt } =
-      params;
+    const {
+      messages,
+      model,
+      max_tokens,
+      temperature,
+      tools,
+      systemPrompt
+    } = params;
 
     if (!model) {
       return Promise.reject(
-        "Model ID is required for AwsBedrockAnthropicService"
+        new Error("Model ID is required for AwsBedrockAnthropicService")
       );
     }
 
@@ -83,14 +98,14 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools.length ? { tools } : {}),
+      ...(tools.length ? { tools } : {})
     });
 
     const command = new InvokeModelWithResponseStreamCommand({
       modelId: model,
       body,
       contentType: "application/json",
-      accept: "application/json",
+      accept: "application/json"
     });
 
     const response = await this.bedrock.send(command);
@@ -100,7 +115,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
 
       for await (const payload of response.body) {
         const decodedString = decoder.decode(payload.chunk?.bytes, {
-          stream: true,
+          stream: true
         });
 
         try {
