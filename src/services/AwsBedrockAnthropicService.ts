@@ -28,17 +28,11 @@ export default class AwsBedrockAnthropicService implements ClientService {
     model?: string;
     max_tokens?: number;
     temperature?: number;
-    functions?: any; // TODO: Define the correct type
+    tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): Promise<BedrockAnthropicResponse> {
-    const {
-      messages,
-      model,
-      max_tokens,
-      temperature,
-      systemPrompt,
-      functions,
-    } = params;
+    const { messages, model, max_tokens, temperature, systemPrompt, tools } =
+      params;
 
     if (!model) {
       return Promise.reject(
@@ -52,7 +46,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(functions.length ? { functions } : {}),
+      ...(tools.length ? { tools } : {}),
     });
 
     const command = new InvokeModelCommand({
@@ -71,17 +65,11 @@ export default class AwsBedrockAnthropicService implements ClientService {
     model?: string;
     max_tokens?: number;
     temperature?: number;
-    functions?: any; // TODO: Define the correct type
+    tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    const {
-      messages,
-      model,
-      max_tokens,
-      temperature,
-      functions,
-      systemPrompt,
-    } = params;
+    const { messages, model, max_tokens, temperature, tools, systemPrompt } =
+      params;
 
     if (!model) {
       return Promise.reject(
@@ -95,7 +83,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(functions.length ? { functions } : {}),
+      ...(tools.length ? { tools } : {}),
     });
 
     const command = new InvokeModelWithResponseStreamCommand({

@@ -64,7 +64,7 @@ export async function generateLLMResponse(
     model,
     max_tokens,
     temperature: temperature || 0,
-    functions,
+    tools: functions,
     systemPrompt,
   });
 
@@ -117,7 +117,7 @@ export async function generateLLMStreamResponse(
     model,
     max_tokens,
     temperature: temperature || 0,
-    functions,
+    tools: functions,
     systemPrompt,
   });
 

@@ -14,14 +14,14 @@ export default class OpenAIService implements ClientService {
     model,
     max_tokens,
     temperature,
-    functions,
+    tools,
   }: {
     messages: OpenAIMessages;
     model: string;
     max_tokens: number;
     temperature: number;
     systemPrompt?: string;
-    functions?: any;
+    tools?: any;
   }): Promise<OpenAIResponse> {
     if (!model) {
       return Promise.reject("Model ID is required for OpenAIService.");
@@ -33,7 +33,7 @@ export default class OpenAIService implements ClientService {
         messages,
         max_tokens,
         temperature,
-        functions,
+        functions: tools,
       });
       return response as OpenAIResponse;
     } catch (error) {
@@ -46,14 +46,14 @@ export default class OpenAIService implements ClientService {
     model,
     max_tokens,
     temperature,
-    functions,
+    tools,
   }: {
     messages: OpenAIMessages;
     model: string;
     max_tokens: number;
     temperature: number;
     systemPrompt?: string;
-    functions?: any;
+    tools?: any;
   }): AsyncGenerator<any, void, unknown> {
     if (!model) {
       return Promise.reject("Model ID is required for OpenAIService.");
@@ -65,7 +65,7 @@ export default class OpenAIService implements ClientService {
         messages,
         max_tokens,
         temperature,
-        functions,
+        functions: tools,
         stream: true,
         stream_options: {
           include_usage: true,

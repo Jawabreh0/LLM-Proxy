@@ -6,14 +6,14 @@ export interface ClientService {
     model,
     max_tokens,
     temperature,
-    functions,
+    tools,
     systemPrompt,
   }: {
     messages: Messages;
     model?: string;
     max_tokens?: number;
     temperature?: number;
-    functions?: any; // TODO: Define the correct type
+    tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): Promise<LLMResponse>;
 
@@ -22,14 +22,14 @@ export interface ClientService {
     model,
     max_tokens,
     temperature,
-    functions,
+    tools,
     systemPrompt,
   }: {
     messages: Messages;
     model?: string;
     max_tokens?: number;
     temperature?: number;
-    functions?: any; // TODO: Define the correct type it might be looking like below
+    tools?: any; // TODO: Define the correct type it might be looking like below
     systemPrompt?: string;
   }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;
 }
