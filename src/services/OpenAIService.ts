@@ -58,8 +58,10 @@ export default class OpenAIService implements ClientService {
     temperature: number;
     systemPrompt?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: fix the below any type
     tools?: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: fix the below any type
   }): AsyncGenerator<any, void, unknown> {
     if (!model) {
       return Promise.reject(
