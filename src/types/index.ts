@@ -165,11 +165,17 @@ export interface OpenAIResponse {
 
 // AWS BEDROCK ANTHROPIC
 
+// https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html
 export enum BedrockAnthropicSupportedLLMs {
-  CLAUDE_3_HAIKU = "anthropic.claude-3-haiku-20240307-v1:0",
   CLAUDE_3_SONNET = "anthropic.claude-3-sonnet-20240229-v1:0",
+  CLAUDE_3_5_SONNET_V_1 = "anthropic.claude-3-5-sonnet-20240620-v1:0",
+  CLAUDE_3_5_SONNET_V_2 = "anthropic.claude-3-5-sonnet-20241022-v2:0",
   CLAUDE_3_OPUS = "anthropic.claude-3-opus-20240229-v1:0",
-  CLAUDE_3_5_SONNET = "anthropic.claude-3-5-sonnet-20241022-v2:0",
+  CLAUDE_V_2_1 = "anthropic.claude-v2:1",
+  CLAUDE_V_2 = "anthropic.claude-v2	",
+  CLAUDE_3_HAIKU = "anthropic.claude-3-haiku-20240307-v1:0",
+  CLAUDE_3_5_HAIKU = "anthropic.claude-3-5-haiku-20241022-v1:0",
+  CLAUDE_INSTANT = "anthropic.claude-instant-v1",
 }
 
 export enum BedrockAnthropicContentType {
