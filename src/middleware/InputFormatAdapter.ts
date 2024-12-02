@@ -18,6 +18,7 @@ export default class InputFormatAdapter {
     switch (provider) {
       case Providers.OPENAI:
         return {
+          // @ts-ignore
           adaptedMessages: messages.map((msg) => {
             if (msg.role === "function") {
               return {
@@ -50,6 +51,7 @@ export default class InputFormatAdapter {
         const systemPrompt = firstMessage.content ?? "";
         const adaptedMessages: any = [];
 
+        // @ts-ignore
         restMessages.forEach((msg) => {
           if (msg.role !== "user" && msg.role !== "assistant") {
             // Add the "empty" message before the current one
