@@ -1,12 +1,12 @@
 import {
   InvokeModelCommand,
   BedrockRuntimeClient,
-  InvokeModelWithResponseStreamCommand,
+  InvokeModelWithResponseStreamCommand
 } from "@aws-sdk/client-bedrock-runtime";
 import {
   BedrockAnthropicParsedChunk,
   BedrockAnthropicResponse,
-  Messages,
+  Messages
 } from "../types";
 import { ClientService } from "./ClientService";
 
@@ -18,8 +18,8 @@ export default class AwsBedrockAnthropicService implements ClientService {
       region,
       credentials: {
         accessKeyId: awsAccessKey,
-        secretAccessKey: awsSecretKey,
-      },
+        secretAccessKey: awsSecretKey
+      }
     });
   }
 
@@ -32,8 +32,14 @@ export default class AwsBedrockAnthropicService implements ClientService {
     tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): Promise<BedrockAnthropicResponse> {
-    const { messages, model, max_tokens, temperature, systemPrompt, tools } =
-      params;
+    const {
+      messages,
+      model,
+      max_tokens,
+      temperature,
+      systemPrompt,
+      tools
+    } = params;
 
     if (!model) {
       return Promise.reject(
@@ -47,14 +53,14 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools.length ? { tools } : {}),
+      ...(tools.length ? { tools } : {})
     });
 
     const command = new InvokeModelCommand({
       modelId: model,
       body,
       contentType: "application/json",
-      accept: "application/json",
+      accept: "application/json"
     });
 
     const response = await this.bedrock.send(command);
@@ -71,8 +77,14 @@ export default class AwsBedrockAnthropicService implements ClientService {
     tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    const { messages, model, max_tokens, temperature, tools, systemPrompt } =
-      params;
+    const {
+      messages,
+      model,
+      max_tokens,
+      temperature,
+      tools,
+      systemPrompt
+    } = params;
 
     if (!model) {
       return Promise.reject(
@@ -86,14 +98,14 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
-      ...(tools.length ? { tools } : {}),
+      ...(tools.length ? { tools } : {})
     });
 
     const command = new InvokeModelWithResponseStreamCommand({
       modelId: model,
       body,
       contentType: "application/json",
-      accept: "application/json",
+      accept: "application/json"
     });
 
     const response = await this.bedrock.send(command);
@@ -103,7 +115,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
 
       for await (const payload of response.body) {
         const decodedString = decoder.decode(payload.chunk?.bytes, {
-          stream: true,
+          stream: true
         });
 
         try {
