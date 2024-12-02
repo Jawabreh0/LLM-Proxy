@@ -9,7 +9,7 @@ import {
 
 export default class InputFormatAdapter {
   static adaptMessages(
-    messages: Messages,
+    messages: any,
     provider: Providers
   ): {
     adaptedMessages: OpenAIMessages | BedrockAnthropicMessage[];
@@ -28,7 +28,7 @@ export default class InputFormatAdapter {
             }
             return {
               role: msg.role,
-              content: msg.content ?? "",
+              content: msg.content ?? "function call",
             };
           }) as OpenAIMessages,
         };
@@ -48,16 +48,61 @@ export default class InputFormatAdapter {
         }
 
         const systemPrompt = firstMessage.content ?? "";
+        const adaptedMessages: any = [];
 
-        const adaptedMessages = restMessages.map((msg) => ({
-          role: msg.role === "user" ? "user" : "assistant",
-          content: [
-            {
-              type: BedrockAnthropicContentType.TEXT,
-              text: msg.content ?? "",
-            },
-          ],
-        })) as BedrockAnthropicMessage[];
+        restMessages.forEach((msg) => {
+          if (msg.role !== "user" && msg.role !== "assistant") {
+            // Add the "empty" message before the current one
+            adaptedMessages.push({
+              role: "user",
+              content: [
+                {
+                  type: BedrockAnthropicContentType.TEXT,
+                  text: ":",
+                },
+              ],
+            });
+
+            // Change the role to "assistant" for the current message
+            adaptedMessages.push({
+              role: "assistant",
+              content: [
+                {
+                  type: BedrockAnthropicContentType.TEXT,
+                  text: msg.content ?? "",
+                },
+              ],
+            });
+          } else {
+            // Add the message as-is
+            adaptedMessages.push({
+              role: msg.role,
+              content: [
+                {
+                  type: BedrockAnthropicContentType.TEXT,
+                  text: msg.content ?? msg.function_call.arguments,
+                },
+              ],
+            });
+          }
+        });
+
+        // Ensure no two consecutive messages have the same role
+        for (let i = 0; i < adaptedMessages.length - 1; i += 1) {
+          if (adaptedMessages[i].role === adaptedMessages[i + 1].role) {
+            // Insert a placeholder message with the opposite role
+            adaptedMessages.splice(i + 1, 0, {
+              role: adaptedMessages[i].role === "user" ? "assistant" : "user",
+              content: [
+                {
+                  type: BedrockAnthropicContentType.TEXT,
+                  text: ":",
+                },
+              ],
+            });
+            i += 1; // Skip the inserted message
+          }
+        }
 
         return { adaptedMessages, systemPrompt };
       }

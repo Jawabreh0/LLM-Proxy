@@ -14,7 +14,7 @@ export default class OpenAIService implements ClientService {
     model,
     max_tokens,
     temperature,
-    tools
+    tools,
   }: {
     messages: OpenAIMessages;
     model: string;
@@ -36,7 +36,7 @@ export default class OpenAIService implements ClientService {
         messages,
         max_tokens,
         temperature,
-        functions: tools
+        functions: tools,
       });
       return response as OpenAIResponse;
     } catch (error) {
@@ -50,7 +50,7 @@ export default class OpenAIService implements ClientService {
     model,
     max_tokens,
     temperature,
-    tools
+    tools,
   }: {
     messages: OpenAIMessages;
     model: string;
@@ -76,8 +76,8 @@ export default class OpenAIService implements ClientService {
         functions: tools,
         stream: true,
         stream_options: {
-          include_usage: true
-        }
+          include_usage: true,
+        },
       });
 
       for await (const chunk of stream) {

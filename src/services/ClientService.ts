@@ -7,7 +7,7 @@ export interface ClientService {
     max_tokens,
     temperature,
     tools,
-    systemPrompt
+    systemPrompt,
   }: {
     messages: Messages;
     model?: string;
@@ -24,7 +24,7 @@ export interface ClientService {
     max_tokens,
     temperature,
     tools,
-    systemPrompt
+    systemPrompt,
   }: {
     messages: Messages;
     model?: string;

@@ -4,7 +4,7 @@ import {
   Providers,
 } from "../types";
 
-export class ProviderFinder {
+export default class ProviderFinder {
   static getProvider(model: string): Providers {
     // Check if the model belongs to OpenAI-supported LLMs
     if (
