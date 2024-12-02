@@ -1,9 +1,9 @@
-import { ProviderFinder } from "./middleware/ProviderFinder";
-import { InputFormatAdapter } from "./middleware/InputFormatAdapter";
 import { Messages, OpenAIResponse, Providers } from "./types";
 import OpenAIService from "./services/OpenAIService";
-import { OutputFormatAdapter } from "./middleware/OutputFormatAdapter";
 import AwsBedrockAnthropicService from "./services/AwsBedrockAnthropicService";
+import ProviderFinder from "./middleware/ProviderFinder";
+import InputFormatAdapter from "./middleware/InputFormatAdapter";
+import OutputFormatAdapter from "./middleware/OutputFormatAdapter";
 
 // Define the credentials interface for flexibility
 interface Credentials {
@@ -35,13 +35,17 @@ export async function generateLLMResponse(
   let service: OpenAIService | AwsBedrockAnthropicService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
-      return Promise.reject("OpenAI API key is required for OpenAI models.");
+      return Promise.reject(
+        new Error("OpenAI API key is required for OpenAI models.")
+      );
     }
     service = new OpenAIService(credentials.apiKey);
   } else if (provider === Providers.ANTHROPIC_BEDROCK) {
-    const awsConfig = credentials.awsConfig;
+    const { awsConfig } = credentials;
     if (!awsConfig) {
-      return Promise.reject("AWS credentials are required for Bedrock models.");
+      return Promise.reject(
+        new Error("AWS credentials are required for Bedrock models.")
+      );
     }
     service = new AwsBedrockAnthropicService(
       awsConfig.accessKeyId,
@@ -49,7 +53,7 @@ export async function generateLLMResponse(
       awsConfig.region
     );
   } else {
-    return Promise.reject("Unsupported provider");
+    return Promise.reject(new Error("Unsupported provider"));
   }
 
   // Step 2: Adapt messages and extract the system prompt
@@ -64,7 +68,7 @@ export async function generateLLMResponse(
     model,
     max_tokens,
     temperature: temperature || 0,
-    functions,
+    tools: functions,
     systemPrompt,
   });
 
@@ -88,13 +92,17 @@ export async function generateLLMStreamResponse(
   let service: OpenAIService | AwsBedrockAnthropicService;
   if (provider === Providers.OPENAI) {
     if (!credentials.apiKey) {
-      return Promise.reject("OpenAI API key is required for OpenAI models.");
+      return Promise.reject(
+        new Error("OpenAI API key is required for OpenAI models.")
+      );
     }
     service = new OpenAIService(credentials.apiKey);
   } else if (provider === Providers.ANTHROPIC_BEDROCK) {
-    const awsConfig = credentials.awsConfig;
+    const { awsConfig } = credentials;
     if (!awsConfig) {
-      return Promise.reject("AWS credentials are required for Bedrock models.");
+      return Promise.reject(
+        new Error("AWS credentials are required for Bedrock models.")
+      );
     }
     service = new AwsBedrockAnthropicService(
       awsConfig.accessKeyId,
@@ -102,7 +110,7 @@ export async function generateLLMStreamResponse(
       awsConfig.region
     );
   } else {
-    return Promise.reject("Unsupported provider");
+    return Promise.reject(new Error("Unsupported provider"));
   }
 
   // Step 2: Adapt messages and extract the system prompt
@@ -117,7 +125,7 @@ export async function generateLLMStreamResponse(
     model,
     max_tokens,
     temperature: temperature || 0,
-    functions,
+    tools: functions,
     systemPrompt,
   });
 

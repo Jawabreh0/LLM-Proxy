@@ -25,16 +25,19 @@ export default class AwsBedrockAnthropicService implements ClientService {
 
   async generateCompletion(params: {
     messages: Messages;
-    model: string;
+    model?: string;
     max_tokens?: number;
     temperature?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): Promise<BedrockAnthropicResponse> {
-    const { messages, model, max_tokens, temperature, systemPrompt } = params;
+    const { messages, model, max_tokens, temperature, systemPrompt, tools } =
+      params;
 
     if (!model) {
       return Promise.reject(
-        "Model ID is required for AwsBedrockAnthropicService"
+        new Error("Model ID is required for AwsBedrockAnthropicService")
       );
     }
 
@@ -44,6 +47,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
+      ...(tools.length ? { tools } : {}),
     });
 
     const command = new InvokeModelCommand({
@@ -57,18 +61,22 @@ export default class AwsBedrockAnthropicService implements ClientService {
     return JSON.parse(new TextDecoder().decode(response.body));
   }
 
+  // eslint-disable-next-line consistent-return
   async *generateStreamCompletion(params: {
     messages: Messages;
-    model: string;
+    model?: string;
     max_tokens?: number;
     temperature?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown> {
-    const { messages, model, max_tokens, temperature, systemPrompt } = params;
+    const { messages, model, max_tokens, temperature, tools, systemPrompt } =
+      params;
 
     if (!model) {
       return Promise.reject(
-        "Model ID is required for AwsBedrockAnthropicService"
+        new Error("Model ID is required for AwsBedrockAnthropicService")
       );
     }
 
@@ -78,6 +86,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
       temperature,
       messages,
       system: systemPrompt,
+      ...(tools.length ? { tools } : {}),
     });
 
     const command = new InvokeModelWithResponseStreamCommand({

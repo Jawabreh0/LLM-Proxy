@@ -6,14 +6,15 @@ export interface ClientService {
     model,
     max_tokens,
     temperature,
-    functions,
+    tools,
     systemPrompt,
   }: {
     messages: Messages;
     model?: string;
     max_tokens?: number;
     temperature?: number;
-    functions?: any; // TODO: Define the correct type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tools?: any; // TODO: Define the correct type
     systemPrompt?: string;
   }): Promise<LLMResponse>;
 
@@ -22,21 +23,15 @@ export interface ClientService {
     model,
     max_tokens,
     temperature,
-    functions,
+    tools,
     systemPrompt,
   }: {
     messages: Messages;
     model?: string;
     max_tokens?: number;
     temperature?: number;
-    functions?: any; // TODO: Define the correct type it might be looking like below
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tools?: any; // TODO: Define the correct type it might be looking like below
     systemPrompt?: string;
   }): AsyncGenerator<BedrockAnthropicParsedChunk, void, unknown>;
 }
-
-//  functions: [
-//   {
-//     name: "function1",
-//     description: "Description of function1",
-//     parameters: {/* JSON schema for function1 */}
-//   },
