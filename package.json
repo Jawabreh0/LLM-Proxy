@@ -1,17 +1,20 @@
 {
   "name": "llm-proxy",
-  "version": "1.4.15",
+  "version": "0.0.0-development",
   "description": "An LLM Proxy that allows the user to interact with different language models from different providers using unified request and response formats.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "package.json"
   ],
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
     "test": "jest --config jest.config.js",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "prepublishOnly": "npm run build",
+    "semantic-release": "semantic-release"
   },
   "keywords": [],
   "author": "Ahmad Jawabreh - jawabreh0",
@@ -21,6 +24,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.8.6",
     "jest": "^29.7.0",
+    "semantic-release": "^24.2.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
