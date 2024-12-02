@@ -1,4 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// TODO: fix the below any type
 function cacheModelAndTool(chunk: any, adapter: any): void {
   const updatedAdapter = { ...adapter };
 

@@ -5,17 +5,19 @@ import adaptOpenAIMessages from "../utils/inputFormatAdapterUtils/adaptOpenAIMes
 export default class InputFormatAdapter {
   static adaptMessages(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: fix the below any type
     messages: any,
     provider: Providers
   ): {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: fix the below any type
     adaptedMessages: any;
     systemPrompt?: string;
   } {
     switch (provider) {
       case Providers.OPENAI:
         return {
-          adaptedMessages: adaptOpenAIMessages(messages)
+          adaptedMessages: adaptOpenAIMessages(messages),
         };
 
       case Providers.ANTHROPIC_BEDROCK:

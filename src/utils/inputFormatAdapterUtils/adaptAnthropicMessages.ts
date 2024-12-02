@@ -3,7 +3,8 @@ import { createMessage, createPlaceholderMessage } from "./createMessage";
 import ensureNoConsecutiveRoles from "./ensureNoConsecutiveRoles";
 
 function adaptAnthropicMessages(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-
+  // TODO: fix the below any type
   messages: any[]
 ): {
   adaptedMessages: BedrockAnthropicMessage[];
@@ -24,7 +25,7 @@ function adaptAnthropicMessages(
   const systemPrompt = firstMessage.content ?? "";
   const adaptedMessages: BedrockAnthropicMessage[] = [];
 
-  restMessages.forEach(msg => {
+  restMessages.forEach((msg) => {
     if (msg.role !== "user" && msg.role !== "assistant") {
       adaptedMessages.push(
         createPlaceholderMessage("user"),

@@ -1,8 +1,8 @@
 import { LLMResponse, Providers } from "../types";
-import cacheModelAndTool from "../utils/outputFormatAdapterUtils/streamingResponseUtils/cacheModelAndTool";
-import createNonToolUseResponse from "../utils/outputFormatAdapterUtils/streamingResponseUtils/createNonToolUseResponse";
-import createToolUseResponse from "../utils/outputFormatAdapterUtils/streamingResponseUtils/createToolUseResponse";
-import resetState from "../utils/outputFormatAdapterUtils/streamingResponseUtils/resetState";
+import cacheModelAndTool from "../utils/outputFormatAdapterUtils/cacheModelAndTool";
+import createNonToolUseResponse from "../utils/outputFormatAdapterUtils/createNonToolUseResponse";
+import createToolUseResponse from "../utils/outputFormatAdapterUtils/createToolUseResponse";
+import resetState from "../utils/outputFormatAdapterUtils/resetState";
 
 export default class OutputFormatAdapter {
   public static isToolUseStream = false;
@@ -14,6 +14,7 @@ export default class OutputFormatAdapter {
   public static toolName: string | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: fix the below any type
   static adaptResponse(response: any, provider: Providers): LLMResponse {
     if (!response) {
       throw new Error("Response object is null or undefined");
@@ -34,6 +35,7 @@ export default class OutputFormatAdapter {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: fix the below any type
   private static adaptStreamingResponse(chunk: any): any {
     const metrics = chunk["amazon-bedrock-invocationMetrics"];
     const isStop =

@@ -8,6 +8,7 @@ function createToolUseResponse(
     toolName: string | undefined;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: fix the below any type
 ): any {
   return {
     id: `stream-${Date.now()}`,
@@ -21,21 +22,21 @@ function createToolUseResponse(
         delta: {
           function_call: {
             name: adapter.toolName || "unknown_tool",
-            arguments: adapter.toolArguments.join(", ")
-          }
+            arguments: adapter.toolArguments.join(", "),
+          },
         },
         logprobs: null,
-        finish_reason: isStop ? "stop" : null
-      }
+        finish_reason: isStop ? "stop" : null,
+      },
     ],
     usage: isStop
       ? {
           prompt_tokens: metrics?.inputTokenCount || 0,
           completion_tokens: metrics?.outputTokenCount || 0,
           total_tokens:
-            (metrics?.inputTokenCount || 0) + (metrics?.outputTokenCount || 0)
+            (metrics?.inputTokenCount || 0) + (metrics?.outputTokenCount || 0),
         }
-      : null
+      : null,
   };
 }
 
