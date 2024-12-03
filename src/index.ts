@@ -1,16 +1,15 @@
-import { Messages, OpenAIResponse, Providers } from "./types";
+import {
+  Messages,
+  OpenAIResponse,
+  ProviderCredentials,
+  Providers,
+} from "./types";
 import OpenAIService from "./services/OpenAIService";
 import AwsBedrockAnthropicService from "./services/AwsBedrockAnthropicService";
 import ProviderFinder from "./middleware/ProviderFinder";
 import InputFormatAdapter from "./middleware/InputFormatAdapter";
 import OutputFormatAdapter from "./middleware/OutputFormatAdapter";
 import LLM_PROXY_ERROR_MESSAGES from "./constants/errorMessages";
-
-// Define the credentials interface for flexibility
-interface Credentials {
-  apiKey?: string;
-  awsConfig?: { accessKeyId: string; secretAccessKey: string; region: string };
-}
 
 // Define the input parameters interface for flexibility
 interface GenerateLLMResponseParams {
@@ -19,13 +18,13 @@ interface GenerateLLMResponseParams {
   functions?: Record<string, unknown>; // Replace 'any' with a more specific type
   max_tokens: number;
   temperature?: number;
-  credentials: Credentials;
+  credentials: ProviderCredentials;
 }
 
 // Utility function to validate credentials
 function validateCredentials(
   provider: Providers,
-  credentials: Credentials
+  credentials: ProviderCredentials
 ): void {
   if (provider === Providers.OPENAI && !credentials.apiKey) {
     throw new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_API_KEY);
@@ -44,7 +43,7 @@ function validateCredentials(
 // Factory function to initialize services
 function initializeService(
   provider: Providers,
-  credentials: Credentials
+  credentials: ProviderCredentials
 ): OpenAIService | AwsBedrockAnthropicService {
   validateCredentials(provider, credentials);
 
