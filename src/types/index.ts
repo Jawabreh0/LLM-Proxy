@@ -2,7 +2,7 @@
 export enum Providers {
   OPENAI = "OpenAI",
   ANTHROPIC_BEDROCK = "AnthropicBedrock",
-  COHERE_BEDROCK = "CohereBedrock" // NOTE: not supported  yet
+  COHERE_BEDROCK = "CohereBedrock", // NOTE: not supported  yet
 }
 
 export type OpenAIMessagesRoles =
@@ -115,7 +115,7 @@ export enum OpenAISupportedLLMs {
   GPT_3_5_TURBO_0613 = "gpt-3.5-turbo-0613",
   GPT_3_5_TURBO_1106 = "gpt-3.5-turbo-1106",
   GPT_3_5_TURBO_0125 = "gpt-3.5-turbo-0125",
-  GPT_3_5_TURBO_16K_0613 = "gpt-3.5-turbo-16k-0613"
+  GPT_3_5_TURBO_16K_0613 = "gpt-3.5-turbo-16k-0613",
 }
 
 export interface OpenAIChoices {
@@ -175,14 +175,14 @@ export enum BedrockAnthropicSupportedLLMs {
   CLAUDE_V_2 = "anthropic.claude-v2	",
   CLAUDE_3_HAIKU = "anthropic.claude-3-haiku-20240307-v1:0",
   CLAUDE_3_5_HAIKU = "anthropic.claude-3-5-haiku-20241022-v1:0",
-  CLAUDE_INSTANT = "anthropic.claude-instant-v1"
+  CLAUDE_INSTANT = "anthropic.claude-instant-v1",
 }
 
 export enum BedrockAnthropicContentType {
   TEXT = "text",
   IMAGE = "image",
   TOOL_USE = "tool_use",
-  TOOL_RESULT = "tool_result"
+  TOOL_RESULT = "tool_result",
 }
 
 export type BedrockAnthropicMessageRole = "user" | "assistant";
@@ -292,3 +292,22 @@ export type BedrockAnthropicParsedChunk = {
 // GENERAL
 export type Messages = OpenAIMessages | BedrockAnthropicMessages;
 export type LLMResponse = OpenAIResponse | BedrockAnthropicResponse;
+
+interface AwsConfigCredentials {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
+}
+export interface ProviderCredentials {
+  apiKey?: string;
+  awsConfig?: AwsConfigCredentials;
+}
+
+export interface GenerateLLMResponseParams {
+  messages: Messages;
+  model: string;
+  functions?: any; // TODO: Replace 'any' with a more specific type
+  max_tokens: number;
+  temperature?: number;
+  credentials: ProviderCredentials;
+}
