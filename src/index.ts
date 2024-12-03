@@ -4,7 +4,6 @@ import InputFormatAdapter from "./middleware/InputFormatAdapter";
 import OutputFormatAdapter from "./middleware/OutputFormatAdapter";
 import initializeProviderService from "./utils/initializeProviderService";
 
-// Main function for non-streaming requests
 export async function generateLLMResponse(
   params: GenerateLLMResponseParams
 ): Promise<OpenAIResponse> {
@@ -33,7 +32,6 @@ export async function generateLLMResponse(
     : (OutputFormatAdapter.adaptResponse(response, provider) as OpenAIResponse);
 }
 
-// Main function for streaming requests
 export async function generateLLMStreamResponse(
   params: GenerateLLMResponseParams
 ): Promise<AsyncGenerator<OpenAIResponse>> {
