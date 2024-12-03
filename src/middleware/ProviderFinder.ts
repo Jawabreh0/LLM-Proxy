@@ -1,7 +1,7 @@
 import {
   BedrockAnthropicSupportedLLMs,
   OpenAISupportedLLMs,
-  Providers
+  Providers,
 } from "../types";
 
 export default class ProviderFinder {

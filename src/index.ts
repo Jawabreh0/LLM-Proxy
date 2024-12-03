@@ -24,7 +24,7 @@ export async function generateLLMResponse(
     max_tokens,
     temperature: temperature || 0,
     tools: functions,
-    systemPrompt,
+    systemPrompt: systemPrompt || "",
   });
 
   return provider === Providers.OPENAI
@@ -52,7 +52,7 @@ export async function generateLLMStreamResponse(
     max_tokens,
     temperature: temperature || 0,
     tools: functions,
-    systemPrompt,
+    systemPrompt: systemPrompt || "",
   });
 
   async function* streamGenerator(): AsyncGenerator<OpenAIResponse> {
