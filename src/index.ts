@@ -1,54 +1,8 @@
-import {
-  GenerateLLMResponseParams,
-  Messages,
-  OpenAIResponse,
-  ProviderCredentials,
-  Providers,
-} from "./types";
-import OpenAIService from "./services/OpenAIService";
-import AwsBedrockAnthropicService from "./services/AwsBedrockAnthropicService";
+import { GenerateLLMResponseParams, OpenAIResponse, Providers } from "./types";
 import ProviderFinder from "./middleware/ProviderFinder";
 import InputFormatAdapter from "./middleware/InputFormatAdapter";
 import OutputFormatAdapter from "./middleware/OutputFormatAdapter";
-import LLM_PROXY_ERROR_MESSAGES from "./constants/errorMessages";
-
-// Utility function to validate credentials
-function validateCredentials(
-  provider: Providers,
-  credentials: ProviderCredentials
-): void {
-  if (provider === Providers.OPENAI && !credentials.apiKey) {
-    throw new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_API_KEY);
-  }
-  if (
-    provider === Providers.ANTHROPIC_BEDROCK &&
-    (!credentials.awsConfig ||
-      !credentials.awsConfig.accessKeyId ||
-      !credentials.awsConfig.secretAccessKey ||
-      !credentials.awsConfig.region)
-  ) {
-    throw new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_AWS_CREDENTIALS);
-  }
-}
-
-// Factory function to initialize services
-function initializeService(
-  provider: Providers,
-  credentials: ProviderCredentials
-): OpenAIService | AwsBedrockAnthropicService {
-  validateCredentials(provider, credentials);
-
-  if (provider === Providers.OPENAI) {
-    return new OpenAIService(credentials.apiKey!);
-  }
-
-  if (provider === Providers.ANTHROPIC_BEDROCK) {
-    const { accessKeyId, secretAccessKey, region } = credentials.awsConfig!;
-    return new AwsBedrockAnthropicService(accessKeyId, secretAccessKey, region);
-  }
-
-  throw new Error(LLM_PROXY_ERROR_MESSAGES.UNSUPPORTED_PROVIDER);
-}
+import initializeProviderService from "./utils/initializeProviderService";
 
 // Main function for non-streaming requests
 export async function generateLLMResponse(
@@ -58,7 +12,7 @@ export async function generateLLMResponse(
     params;
 
   const provider = ProviderFinder.getProvider(model);
-  const service = initializeService(provider, credentials);
+  const service = initializeProviderService(provider, credentials);
 
   const { adaptedMessages, systemPrompt } = InputFormatAdapter.adaptMessages(
     messages,
@@ -87,7 +41,7 @@ export async function generateLLMStreamResponse(
     params;
 
   const provider = ProviderFinder.getProvider(model);
-  const service = initializeService(provider, credentials);
+  const service = initializeProviderService(provider, credentials);
 
   const { adaptedMessages, systemPrompt } = InputFormatAdapter.adaptMessages(
     messages,
