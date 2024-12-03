@@ -9,6 +9,7 @@ import {
   Messages,
 } from "../types";
 import { ClientService } from "./ClientService";
+import LLM_PROXY_ERROR_MESSAGES from "../constants/errorMessages";
 
 export default class AwsBedrockAnthropicService implements ClientService {
   private bedrock: BedrockRuntimeClient;
@@ -36,9 +37,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
       params;
 
     if (!model) {
-      return Promise.reject(
-        new Error("Model ID is required for AwsBedrockAnthropicService")
-      );
+      return Promise.reject(new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_MODEL));
     }
 
     const body = JSON.stringify({
@@ -75,9 +74,7 @@ export default class AwsBedrockAnthropicService implements ClientService {
       params;
 
     if (!model) {
-      return Promise.reject(
-        new Error("Model ID is required for AwsBedrockAnthropicService")
-      );
+      return Promise.reject(new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_MODEL));
     }
 
     const body = JSON.stringify({

@@ -1,7 +1,7 @@
 import { BedrockAnthropicMessageRole } from "llm-proxy";
 import {
   BedrockAnthropicContentType,
-  BedrockAnthropicMessage
+  BedrockAnthropicMessage,
 } from "../../types";
 
 export function createMessage(
@@ -13,9 +13,9 @@ export function createMessage(
     content: [
       {
         type: BedrockAnthropicContentType.TEXT,
-        text: content
-      }
-    ]
+        text: content,
+      },
+    ],
   };
 }
 

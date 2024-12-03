@@ -1,3 +1,4 @@
+import LLM_PROXY_ERROR_MESSAGES from "../constants/errorMessages";
 import { LLMResponse, Providers } from "../types";
 import cacheModelAndTool from "../utils/outputFormatAdapterUtils/cacheModelAndTool";
 import createNonToolUseResponse from "../utils/outputFormatAdapterUtils/createNonToolUseResponse";
@@ -17,7 +18,9 @@ export default class OutputFormatAdapter {
   // TODO: fix the below any type
   static adaptResponse(response: any, provider: Providers): LLMResponse {
     if (!response) {
-      throw new Error("Response object is null or undefined");
+      throw new Error(
+        LLM_PROXY_ERROR_MESSAGES.RESPONSE_OBJECT_NULL_OR_UNDEFINED
+      );
     }
 
     try {
@@ -27,10 +30,10 @@ export default class OutputFormatAdapter {
         case Providers.ANTHROPIC_BEDROCK:
           return this.adaptStreamingResponse(response);
         default:
-          throw new Error(`Unsupported provider: ${provider}`);
+          throw new Error(LLM_PROXY_ERROR_MESSAGES.UNSUPPORTED_PROVIDER);
       }
     } catch (error) {
-      throw new Error(`Failed to adapt response: ${(error as Error).message}`);
+      throw new Error(LLM_PROXY_ERROR_MESSAGES.FAILED_TO_ADAPT_RESPONSE);
     }
   }
 

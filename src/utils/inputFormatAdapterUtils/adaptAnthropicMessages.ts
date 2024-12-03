@@ -1,3 +1,4 @@
+import LLM_PROXY_ERROR_MESSAGES from "../../constants/errorMessages";
 import { BedrockAnthropicMessage } from "../../types";
 import { createMessage, createPlaceholderMessage } from "./createMessage";
 import ensureNoConsecutiveRoles from "./ensureNoConsecutiveRoles";
@@ -11,15 +12,13 @@ function adaptAnthropicMessages(
   systemPrompt: string;
 } {
   if (!messages.length) {
-    throw new Error("Messages array cannot be empty for Anthropic.");
+    throw new Error(LLM_PROXY_ERROR_MESSAGES.MESSAGES_ARRAY_CANNOT_BE_EMPTY);
   }
 
   const [firstMessage, ...restMessages] = messages;
 
   if (firstMessage.role !== "system") {
-    throw new Error(
-      "The first message must have a role of 'system' for Anthropic."
-    );
+    throw new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_ANTHROPIC_SYSTEM_ROLE);
   }
 
   const systemPrompt = firstMessage.content ?? "";

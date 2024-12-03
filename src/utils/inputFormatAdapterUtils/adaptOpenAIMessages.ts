@@ -9,12 +9,12 @@ function adaptOpenAIMessages(
       return {
         role: msg.role,
         content: msg.content ?? "",
-        name: (msg as OpenAIFunctionMessage).name
+        name: (msg as OpenAIFunctionMessage).name,
       };
     }
     return {
       role: msg.role,
-      content: msg.content ?? "function call"
+      content: msg.content ?? "function call",
     };
   }) as OpenAIMessages;
 }

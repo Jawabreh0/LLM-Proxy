@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { OpenAIMessages, OpenAIResponse } from "../types";
 import { ClientService } from "./ClientService";
+import LLM_PROXY_ERROR_MESSAGES from "../constants/errorMessages";
 
 export default class OpenAIService implements ClientService {
   private openai: OpenAI;
@@ -25,9 +26,7 @@ export default class OpenAIService implements ClientService {
     tools?: any;
   }): Promise<OpenAIResponse> {
     if (!model) {
-      return Promise.reject(
-        new Error("Model ID is required for OpenAIService.")
-      );
+      return Promise.reject(new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_MODEL));
     }
 
     try {
@@ -64,9 +63,7 @@ export default class OpenAIService implements ClientService {
     // TODO: fix the below any type
   }): AsyncGenerator<any, void, unknown> {
     if (!model) {
-      return Promise.reject(
-        new Error("Model ID is required for OpenAIService.")
-      );
+      return Promise.reject(new Error(LLM_PROXY_ERROR_MESSAGES.MISSING_MODEL));
     }
 
     try {

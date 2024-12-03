@@ -9,7 +9,7 @@ function resetState(adapter: {
     isToolUseStream: false,
     toolArguments: [],
     model: undefined,
-    toolName: undefined
+    toolName: undefined,
   };
   Object.assign(adapter, newAdapter);
 }
