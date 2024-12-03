@@ -302,3 +302,12 @@ export interface ProviderCredentials {
   apiKey?: string;
   awsConfig?: AwsConfigCredentials;
 }
+
+export interface GenerateLLMResponseParams {
+  messages: Messages;
+  model: string;
+  functions?: any; // TODO: Replace 'any' with a more specific type
+  max_tokens: number;
+  temperature?: number;
+  credentials: ProviderCredentials;
+}

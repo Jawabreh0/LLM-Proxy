@@ -1,4 +1,5 @@
 import {
+  GenerateLLMResponseParams,
   Messages,
   OpenAIResponse,
   ProviderCredentials,
@@ -10,16 +11,6 @@ import ProviderFinder from "./middleware/ProviderFinder";
 import InputFormatAdapter from "./middleware/InputFormatAdapter";
 import OutputFormatAdapter from "./middleware/OutputFormatAdapter";
 import LLM_PROXY_ERROR_MESSAGES from "./constants/errorMessages";
-
-// Define the input parameters interface for flexibility
-interface GenerateLLMResponseParams {
-  messages: Messages;
-  model: string;
-  functions?: Record<string, unknown>; // Replace 'any' with a more specific type
-  max_tokens: number;
-  temperature?: number;
-  credentials: ProviderCredentials;
-}
 
 // Utility function to validate credentials
 function validateCredentials(
