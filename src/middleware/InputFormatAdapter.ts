@@ -1,3 +1,4 @@
+import LLM_PROXY_ERROR_MESSAGES from "../constants/errorMessages";
 import { Providers } from "../types";
 import adaptAnthropicMessages from "../utils/inputFormatAdapterUtils/adaptAnthropicMessages";
 import adaptOpenAIMessages from "../utils/inputFormatAdapterUtils/adaptOpenAIMessages";
@@ -24,7 +25,7 @@ export default class InputFormatAdapter {
         return adaptAnthropicMessages(messages);
 
       default:
-        throw new Error(`Unsupported provider: ${provider}`);
+        throw new Error(LLM_PROXY_ERROR_MESSAGES.UNSUPPORTED_PROVIDER);
     }
   }
 }

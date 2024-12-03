@@ -1,3 +1,4 @@
+import LLM_PROXY_ERROR_MESSAGES from "../constants/errorMessages";
 import {
   BedrockAnthropicSupportedLLMs,
   OpenAISupportedLLMs,
@@ -21,6 +22,6 @@ export default class ProviderFinder {
       return Providers.ANTHROPIC_BEDROCK;
     }
     // Throw an error for unsupported models
-    throw new Error(`Unsupported model: ${model}`);
+    throw new Error(LLM_PROXY_ERROR_MESSAGES.UNSUPPORTED_PROVIDER);
   }
 }
