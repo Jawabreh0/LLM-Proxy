@@ -1,4 +1,12 @@
-import { LLMResponse, Providers } from "../types";
+import {
+  BedrockAnthropicContent,
+  BedrockAnthropicContentType,
+  BedrockAnthropicTextContent,
+  BedrockAnthropicToolResultContent,
+  BedrockAnthropicToolUseContent,
+  LLMResponse,
+  Providers
+} from "../types";
 
 export default class OutputFormatAdapter {
   private static isToolUseStream = false;
@@ -19,12 +27,79 @@ export default class OutputFormatAdapter {
         case Providers.OPENAI:
           return response as LLMResponse;
         case Providers.ANTHROPIC_BEDROCK:
+          if (response.type === "message" && !response.delta) {
+            return this.adaptCompleteResponse(response);
+          }
           return this.adaptStreamingResponse(response);
+
         default:
           throw new Error(`Unsupported provider: ${provider}`);
       }
     } catch (error) {
       throw new Error(`Failed to adapt response: ${(error as Error).message}`);
+    }
+  }
+
+  private static adaptCompleteResponse(response: any): any {
+    return {
+      id: response.id,
+      object: "text_completion",
+      created: Date.now(),
+      model: this.model || "unknown-model",
+      choices: response.content.map(
+        (contentBlock: BedrockAnthropicContent, index: any) => ({
+          index,
+          message: {
+            role: this.mapRole(contentBlock),
+            content: this.extractContent(contentBlock)
+          },
+          logprobs: null,
+          finish_reason: response.stop_reason || null
+        })
+      ),
+      usage: {
+        prompt_tokens: response.usage?.input_tokens || 0,
+        completion_tokens: response.usage?.output_tokens || 0,
+        total_tokens:
+          (response.usage?.input_tokens || 0) +
+          (response.usage?.output_tokens || 0),
+        prompt_tokens_details: { cached_tokens: 0 },
+        completion_tokens_details: { reasoning_tokens: 0 }
+      },
+      system_fingerprint: response.system_fingerprint || "default_fingerprint"
+    };
+  }
+
+  private static mapRole(content: BedrockAnthropicContent): string {
+    if (!content || !content.type) {
+      throw new Error("Invalid content block structure");
+    }
+
+    switch (content.type) {
+      case BedrockAnthropicContentType.TOOL_USE:
+      case BedrockAnthropicContentType.TOOL_RESULT:
+        return "tool";
+      case BedrockAnthropicContentType.TEXT:
+        return "assistant";
+      default:
+        return "assistant";
+    }
+  }
+
+  private static extractContent(content: BedrockAnthropicContent): string {
+    if (!content || !content.type) {
+      throw new Error("Invalid content block structure");
+    }
+
+    switch (content.type) {
+      case BedrockAnthropicContentType.TEXT:
+        return (content as BedrockAnthropicTextContent).text || "";
+      case BedrockAnthropicContentType.TOOL_RESULT:
+        return (content as BedrockAnthropicToolResultContent).content || "";
+      case BedrockAnthropicContentType.TOOL_USE:
+        return (content as BedrockAnthropicToolUseContent).id || "";
+      default:
+        return "";
     }
   }
 
